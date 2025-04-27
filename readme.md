@@ -225,11 +225,8 @@ GitLms/
 
 
 # 🙌 Acknowledgments
-## Django Documentation
-
-## Django Channels Documentation
-
-##Redis Community
-
-##Inspiration from Moodle and Canvas LMS
+- Django Documentation
+- Django Channels Documentation
+- Redis Community
+- Inspiration from Moodle and Canvas LMS
    
