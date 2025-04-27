@@ -73,10 +73,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'gitlms.wsgi.application'
 ASGI_APPLICATION = 'gitlms.asgi.application'
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],  # Same Redis server
+        },
     },
 }
+
 
 
 # Database

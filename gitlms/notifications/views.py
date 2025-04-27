@@ -195,3 +195,9 @@ def view_not(request,not_id):
     if notification.content_type =="video":
         return render(request,'viewNotificationDetailsVideo.html',context)
     return render(request,"viewNotificationDetailsSlide.html",context)
+
+
+@login_required
+def notifications2(request):
+   
+    return render(request,"notification-2.html")

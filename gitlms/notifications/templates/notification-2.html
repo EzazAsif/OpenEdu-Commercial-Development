@@ -12,7 +12,7 @@
     <script type="text/javascript">
       // Open a WebSocket connection
       const notificationSocket = new WebSocket(
-        "ws://" + window.location.host + "/ws/notifications/"
+        "ws://" + window.location.hostname + ":8001/ws/notifications/"
       );
 
       notificationSocket.onopen = function (e) {
@@ -29,13 +29,18 @@
 
       // When receiving a message from the WebSocket
       notificationSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        console.log("Notification received:", data.notification);
-        const notificationElement = document.createElement("div");
-        notificationElement.textContent = data.notification;
-        document
-          .getElementById("notifications")
-          .appendChild(notificationElement);
+        try {
+          console.log("Message event triggered!");
+          const data = JSON.parse(e.data);
+          console.log("Notification received:", data);
+          const notificationElement = document.createElement("div");
+          notificationElement.textContent = data.notification.notification; // <- if you sent full notification object
+          document
+            .getElementById("notifications")
+            .appendChild(notificationElement);
+        } catch (err) {
+          console.error("Error handling message:", err);
+        }
       };
     </script>
   </body>
