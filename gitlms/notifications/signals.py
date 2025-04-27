@@ -11,9 +11,10 @@ def send_notification_to_users(sender, instance, action, **kwargs):
         channel_layer = get_channel_layer()
         for receiver in instance.recievers.all():
             notification_message = {
-                'notification': instance.message,
-                'sender': instance.sender.username,
-                'type': instance.type,
+                'message': instance.message,
+                'type':instance.type,
+                
+                'id':instance.id
             }
             try:
                 async_to_sync(channel_layer.group_send)(

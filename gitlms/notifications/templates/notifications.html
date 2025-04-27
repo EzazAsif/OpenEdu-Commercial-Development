@@ -1,4 +1,4 @@
-{% extends 'dashboard.html' %} {% block content %}
+{% extends 'dashboard.html' %} {%load static%}{% block content %}
 <!-- Notification Center Content -->
 <div class="container mx-auto px-4 py-8">
   <div class="max-w-7xl mx-auto w-full">
@@ -90,4 +90,11 @@
     </div>
   </div>
 </div>
+<script type="text/javascript">
+  // Pass the base URL dynamically from Django
+  const baseUrl = "{{ request.scheme }}://{{ request.get_host }}"; // This will generate the base URL (e.g., http://localhost:8000 or https://yourdomain.com)
+</script>
+
+<script src="{%static 'js/notificationPush.js' %}"></script>
+
 {% endblock %}
