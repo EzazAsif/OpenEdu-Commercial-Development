@@ -224,10 +224,10 @@ GitLms/
 ```
 
 
-#🙌 Acknowledgments
-##Django Documentation
+# 🙌 Acknowledgments
+## Django Documentation
 
-##Django Channels Documentation
+## Django Channels Documentation
 
 ##Redis Community
 
