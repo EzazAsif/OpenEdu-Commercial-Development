@@ -221,7 +221,15 @@ GitLms/
     ├── views.py
     ├── __init__.py
     └── templates/
-        ├── notification-2.html
-        ├── notifications.html
-        ├── viewNotificationDetailsSlide.html
-        └── viewNotificationDetailsVideo.html
+```
+
+
+#🙌 Acknowledgments
+##Django Documentation
+
+##Django Channels Documentation
+
+##Redis Community
+
+##Inspiration from Moodle and Canvas LMS
+   
