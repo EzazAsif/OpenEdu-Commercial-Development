@@ -72,14 +72,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gitlms.wsgi.application'
 ASGI_APPLICATION = 'gitlms.asgi.application'
+
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],  # Same Redis server
+            "hosts": [(os.environ.get("REDIS_HOST", "127.0.0.1"), 6379)],
         },
     },
 }
+
 
 
 
@@ -92,15 +95,19 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+import os
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',  # Use Redis database 1
+        'LOCATION': os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
 }
+
 
 
 
