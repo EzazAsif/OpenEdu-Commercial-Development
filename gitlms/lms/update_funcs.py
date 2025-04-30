@@ -33,8 +33,6 @@ def update_dept(request, dept_id):
         department.save()
         proxy=QueryCacheProxy(request.user)
         proxy.delete_departments_cache()
-        proxy=QueryCacheProxy(request.user)
-        proxy.delete_departments_cache()
         subject.notify(request, "Department has been updated")
         return redirect('departments')
     else:
