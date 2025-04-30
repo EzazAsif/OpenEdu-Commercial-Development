@@ -1,0 +1,62 @@
+{% extends 'dashboard.html' %}{% load static %} {%block content %}
+<div class="flex flex-col items-center justify-center w-full h-full">
+  <!-- Title -->
+  <h1 class="text-2xl font-bold mb-6 text-gray-800">Conference Options</h1>
+
+  <!-- Buttons -->
+  <button
+    class="px-6 py-3 mb-4 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition"
+    onclick="window.location.href='{% url 'conferance_start' %}';"
+  >
+    Start Instant Conference
+  </button>
+  <button
+    class="px-6 py-3 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition"
+    onclick="openModal()"
+  >
+    Join Conference
+  </button>
+
+  <!-- Modal -->
+  <div
+    id="modal"
+    class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-60 hidden"
+  >
+    <div
+      class="bg-white text-gray-800 p-6 rounded-xl shadow-xl transform scale-95 transition"
+    >
+      <h2 class="text-xl font-bold mb-4">Join Conference</h2>
+      <form id="conferenceForm" onsubmit="submitLink(event)">
+        <label for="conferenceLink" class="block mb-2 text-gray-600"
+          >Conference Link:</label
+        >
+        <input
+          type="text"
+          id="conferenceLink"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+          placeholder="Enter your link here..."
+          required
+        />
+        <div class="flex justify-end gap-4 mt-6">
+          <button
+            type="submit"
+            class="px-5 py-3 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition"
+          >
+            Submit
+          </button>
+          <button
+            type="button"
+            class="px-5 py-3 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition"
+            onclick="closeModal()"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="{% static "js/conferanceHome.js" %}">
+</script>
+{%endblock%}

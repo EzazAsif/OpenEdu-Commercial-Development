@@ -1,0 +1,23 @@
+{% extends 'dashboard.html' %} {%load static%} {%block content %}
+
+<div
+  class="flex flex-col items-center justify-center w-full h-full overflow-hidden"
+  id="root"
+></div>
+
+<script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
+<script>
+    function getUrlParams(url) {
+        let urlStr = url.split('?')[1];
+        const urlSearchParams = new URLSearchParams(urlStr);
+        const result = Object.fromEntries(urlSearchParams.entries());
+        return result;
+    }
+
+
+  const roomID = getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
+  const userID = "{{request.user.id}}";
+  const userName = "{{request.user.first_name}}_{{request.user.last_name}}" + userID;
+</script>
+<script src="{% static "js/ConferanceStartPage.js" %}"></script>
+{%endblock%}
