@@ -28,5 +28,6 @@ urlpatterns = [
     path('errors/', include('errors.urls')),
     path('notifications/', include('notifications.urls')),
     path('chat/', include('commChat.urls')),
+    path('classroom/', include('videomeet.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
