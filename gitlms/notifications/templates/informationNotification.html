@@ -1,0 +1,14 @@
+<div
+  class="bg-white rounded-lg shadow-xl p-6 border-l-4 border-transparent w-full mx-auto"
+>
+  <div class="flex justify-between items-start">
+    <div class="flex-1">
+      <h3 class="font-medium text-gray-900">Approval Notification</h3>
+      <p class="text-gray-600 mt-1">{{notification.message}}</p>
+      <div class="flex items-center mt-3 text-sm text-gray-500">
+        <i class="far fa-clock mr-1"></i>
+        <span>{{notification.created_at|timesince}} ago </span>
+      </div>
+    </div>
+  </div>
+</div>

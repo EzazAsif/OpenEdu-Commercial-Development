@@ -1,0 +1,39 @@
+<div
+  class="bg-white rounded-lg shadow-xl p-6 border-l-4 border-blue-500 w-full mx-auto"
+>
+  <div class="flex justify-between items-start">
+    <div class="flex-1">
+      <h3 class="font-medium text-gray-900">
+        New {{notification.type}} Request
+      </h3>
+      <p class="text-gray-600 mt-1">{{notification.message}}</p>
+      <div class="flex items-center mt-3 text-sm text-gray-500">
+        <i class="far fa-clock mr-1"></i>
+        <span>{{notification.created_at|timesince}} ago</span>
+      </div>
+    </div>
+    <div class="ml-4 flex flex-col items-end">
+      <div class="flex space-x-2">
+        <button
+          onclick="window.location.href='{% url 'approve_not' notification.id %}';"
+          class="px-4 py-2 bg-green-100 text-green-800 rounded-md hover:bg-green-200 transition-colors"
+        >
+          Approve
+        </button>
+        <button
+          onclick="window.location.href='{% url 'reject_not' notification.id %}';"
+          class="px-4 py-2 bg-red-100 text-red-800 rounded-md hover:bg-red-200 transition-colors"
+        >
+          Reject
+        </button>
+      </div>
+      <!-- View Details Link -->
+      <a
+        href="{% url 'view_not' notification.id %}"
+        class="text-blue-600 text-sm hover:underline mt-2"
+      >
+        View Details
+      </a>
+    </div>
+  </div>
+</div>
