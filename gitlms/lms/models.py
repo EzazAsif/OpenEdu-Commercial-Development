@@ -3,17 +3,27 @@ import os
 from django.conf import settings
 from .contentUploadStratagy import *
 from .contentUploadAdapter import ContentUploadAdapter
+from django.contrib.auth.models import User  # Import the User model
+
+
+class Institute(models.Model):
+    id = models.AutoField(primary_key=True)  # Automatically generates a primary key
+    name = models.CharField(max_length=255, unique=True)  # Unique name field
+    image = models.ImageField(upload_to='images/Institute/', null=True,default='images/Institute/default.jpg')  
+    description = models.TextField( max_length=255,default="The Institute is dedicated to academic excellence and cutting-edge research, fostering a dynamic environment that encourages interdisciplinary learning, professional growth, and impactful innovation across various fields.")
+    def __str__(self):
+        return self.name
+
 
 class Department(models.Model):
     id = models.AutoField(primary_key=True)  # Automatically generates a primary key
     name = models.CharField(max_length=255, unique=True)  # Unique name field
     image = models.ImageField(upload_to='images/department/', null=True,default='images/department/default.jpg')  
     description=models.TextField(max_length=255,default="The Department fosters innovative research and interdisciplinary collaboration, focusing on conceptual exploration and advanced academic problem-solving techniques.")
+    institute = models.ForeignKey('Institute', related_name='departments', on_delete=models.CASCADE)  # Foreign key to Department
     def __str__(self):
         return self.name
 
-from django.db import models
-from django.contrib.auth.models import User  # Import the User model
 
 class Course(models.Model):
     id = models.AutoField(primary_key=True)  # Automatically generates a primary key

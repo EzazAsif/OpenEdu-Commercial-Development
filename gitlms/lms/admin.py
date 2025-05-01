@@ -19,4 +19,6 @@ admin.site.register(temp_Video)
 
 admin.site.register(temp_Note)
 
+admin.site.register(Institute)
+
 

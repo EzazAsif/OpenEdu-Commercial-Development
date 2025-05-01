@@ -8,7 +8,8 @@ from .delete_funcs import *
 urlpatterns = []
 
 navigatelms=[
-    path('', departments, name=''),
+
+    path('institutes', institutes, name='institutes'),
     path('departments', departments, name='departments'),
     path('department=<int:id>/', deptcourses, name='deptcourses'),
     path('department=<int:dept_id>/course=<int:course_id>', course_facs, name='course_facs'),

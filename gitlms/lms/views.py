@@ -1,10 +1,22 @@
 
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
-from .models import Department,Course,Faculty,Slide,Video,Note
+from .models import Department,Course,Faculty,Slide,Video,Note,Institute
 from django.conf import settings
 from .contentViewers import *
 from .queryProxy import QueryCacheProxy
+
+
+@login_required
+def institutes(request):
+    institutes=Institute.objects.all()
+    print("hi",institutes)
+    context={
+        'institutes':institutes
+    }
+
+    # Render the departments page with the context
+    return render(request, "lms/institutions.html", context)
 
 
 @login_required

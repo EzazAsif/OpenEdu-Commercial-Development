@@ -1,0 +1,127 @@
+{% extends 'dashboard.html' %} {% load static %} {% block content %}
+<div class="p-6 flex-grow" style="overflow: auto">
+  <!-- Faculty Cards -->
+  {% if institutes %}
+  <div class="w-full overflow-x-auto">
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-items-center"
+    >
+      {% for institute in institutes %}
+      <div
+        class="relative flex flex-col items-center justify-center bg-white p-6 rounded-full shadow-lg transform transition-transform hover:scale-105 cursor-pointer w-full max-w-xs aspect-square"
+      >
+        {% if showUpdateInstitutionModal %}
+        <!-- Three-dot menu for institution -->
+        <div
+          class="absolute top-1/2 right-3 transform -translate-y-1/2 dropdown"
+        >
+          <button
+            class="text-gray-600 hover:text-gray-800 focus:outline-none"
+            onclick="toggleMenu('menu-institution-{{ institution.id }}')"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 transform rotate-90"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+              />
+            </svg>
+          </button>
+
+          <!-- Menu dropdown -->
+          <div
+            id="menu-institution-{{ institution.id }}"
+            class="menu-dropdown absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-1 z-10 hidden"
+          >
+            <button
+              class="block w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-100 flex items-center openUpdateModalBtn"
+              data-type="institution"
+              data-id="{{ institution.id }}"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+              Update
+            </button>
+            <button
+              onclick="window.location.href='#';"
+              class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 flex items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Clickable Card Link -->
+        <a href="#" class="flex flex-col items-center justify-center">
+          <img
+            src="{{ institute.image.url }}"
+            alt="{{ institution.name }}"
+            class="w-32 h-32 object-cover rounded-full mb-4 border-4 border-green-500"
+          />
+          <h3 class="text-xl font-semibold text-gray-800 text-center">
+            {{ institution.name }}
+          </h3>
+          <p class="text-gray-600 text-center text-sm">
+            {{ institution.description|truncatewords:15 }}
+          </p>
+        </a>
+        <a href="#" class="mt-4 text-blue-600 hover:underline text-center">
+          View Institute
+        </a>
+      </div>
+
+      {% endfor %}
+    </div>
+  </div>
+
+  {% else %}
+  <p class="text-gray-500">No faculty members found in this Course.</p>
+  {% endif %}
+
+  <!-- Back to Departments Button -->
+  <a
+    href="{% url 'departments' %}"
+    class="mt-6 inline-block bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+  >
+    ← Back to Courses
+  </a>
+</div>
+
+<!-- JavaScript for Menu Toggle -->
+<script src="{% static 'js/cardDropDown.js' %}"></script>
+
+{% endblock %}
