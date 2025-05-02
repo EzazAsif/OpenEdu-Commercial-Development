@@ -86,7 +86,10 @@
         {% endif %}
 
         <!-- Clickable Card Link -->
-        <a href="#" class="flex flex-col items-center justify-center">
+        <a
+          href="{%url 'departments' institute.id %}"
+          class="flex flex-col items-center justify-center"
+        >
           <img
             src="{{ institute.image.url }}"
             alt="{{ institution.name }}"
@@ -113,12 +116,6 @@
   {% endif %}
 
   <!-- Back to Departments Button -->
-  <a
-    href="{% url 'departments' %}"
-    class="mt-6 inline-block bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-  >
-    ← Back to Courses
-  </a>
 </div>
 
 <!-- JavaScript for Menu Toggle -->

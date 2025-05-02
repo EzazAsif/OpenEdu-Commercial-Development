@@ -5,6 +5,16 @@ from django.contrib.auth.decorators import login_required
 class QueryCacheProxy:
     def __init__(self, user):
         self.user = user
+    def _get_institute(self, ins_id):
+        key = f'institute_obj:{ins_id}'
+        Institute = cache.get(key)
+        if Institute:
+            print(Institute)
+        if not Institute:
+            print("Institute not cached")
+            Institute = Institute.objects.get(id=ins_id)
+            cache.set(key, Institute, timeout=60 * 15)
+        return Institute
 
     def _get_department(self, dept_id):
         key = f'department_obj:{dept_id}'
