@@ -13,8 +13,8 @@ subject=Subject()
 subject.attach(messageObserver)
 
 @login_required
-def update_dept(request, dept_id):
-    if (request.user.role!='master')&(request.user.department!=dept_id):
+def update_dept(request,ins_id, dept_id):
+    if (request.user.institute!=ins_id)and(request.user.department!=dept_id):
         return redirect('illegalactivity')
     department = get_object_or_404(Department, id=dept_id)
     
@@ -32,16 +32,16 @@ def update_dept(request, dept_id):
 
         department.save()
         proxy=QueryCacheProxy(request.user)
-        proxy.delete_departments_cache()
+        proxy.delete_departments_cache(ins_id)
         subject.notify(request, "Department has been updated")
-        return redirect('departments')
+        return redirect('departments',ins_id)
     else:
         subject.notify(request, "Request sent")
-    return redirect('departments')
+    return redirect('departments',ins_id)
 
 @login_required
-def update_course(request,dept_id,course_id):
-    if (request.user.role!='master')and(request.user.department!= dept_id)and(request.user.course!= course_id):
+def update_course(request,ins_id,dept_id,course_id):
+    if (request.user.institute!=ins_id)and(request.user.department!= dept_id)and(request.user.course!= course_id):
         return redirect('illegalactivity')
     department=get_object_or_404(Department,id=dept_id)
     course = get_object_or_404(Course, id=course_id)
@@ -61,18 +61,18 @@ def update_course(request,dept_id,course_id):
             course.image=course_image
         course.save()
         proxy=QueryCacheProxy(request.user)
-        proxy.delete_deptCourses_cache(department.id)
+        proxy.delete_deptCourses_cache(ins_id,dept_id)
         subject.notify(request, "Course has been updated")
     else:
         subject.notify(request, "Request sent")
-    return redirect('deptcourses',department.id)
+    return redirect('deptcourses',ins_id,dept_id)
 
 
 
 @login_required
-def update_fac(request,dept_id,course_id,fac_id):
+def update_fac(request,ins_id,dept_id,course_id,fac_id):
     faculty=get_object_or_404(Faculty, id=fac_id)
-    if (request.user.role!='master')and(request.user.department!= dept_id)and(request.user.course!= course_id):
+    if (request.user.institute!=ins_id)and(request.user.department!= dept_id)and(request.user.course!= course_id):
          return redirect('illegalactivity')
     if request.method == 'POST':
         faculty_name = request.POST.get('facultyName')
@@ -86,25 +86,25 @@ def update_fac(request,dept_id,course_id,fac_id):
         faculty.image = image
     faculty.save()
     proxy=QueryCacheProxy(request.user)
-    proxy.delete_courseFacs_cache(faculty.course.department.id,faculty.course.id)
+    proxy.delete_courseFacs_cache(ins_id,dept_id,course_id)
     subject.notify(request, "Faculty has been updated")
-    return redirect('course_facs',dept_id,course_id)
+    return redirect('course_facs',ins_id,dept_id,course_id)
 
 # Update Slide
 @login_required
-def update_slide(request, dept_id, course_id, fac_id, slide_id):
+def update_slide(request,ins_id, dept_id, course_id, fac_id, slide_id):
     slide = get_object_or_404(Slide, id=slide_id)
     if request.method == 'POST':
         slide_name = request.POST.get('slideName')
         slide_content = request.FILES.get('slideContent')
-        if (request.user.role == 'master') or (request.user.department == dept_id) or (request.user.course == course_id):
+        if (request.user.institute==ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             if slide_name:
                 slide.name = slide_name
             if slide_content:
                 slide.content = slide_content
             slide.save()
             proxy=QueryCacheProxy(request.user)
-            proxy.delete_LecSlides_cache(slide.faculty.course.department.id,slide.faculty.course.id,slide.faculty.id)
+            proxy.delete_LecSlides_cache(ins_id, dept_id, course_id, fac_id)
             subject.notify(request, "Slide has been updated")
         else:
             if slide_name or slide_content:
@@ -122,24 +122,24 @@ def update_slide(request, dept_id, course_id, fac_id, slide_id):
                 notification.recievers.add(*receivers)
                 notification.save()
                 subject.notify(request, "Request sent")
-    return redirect('lec_slides', dept_id, course_id, fac_id)
+    return redirect('lec_slides', ins_id, dept_id, course_id, fac_id)
 
 
 # Update Note
 @login_required
-def update_note(request, dept_id, course_id, fac_id, note_id):
+def update_note(request,ins_id, dept_id, course_id, fac_id, note_id):
     note = get_object_or_404(Note, id=note_id)
     if request.method == 'POST':
         note_name = request.POST.get('noteName')
         note_content = request.FILES.get('noteContent')
-        if (request.user.role == 'master') or (request.user.department == dept_id) or (request.user.course == course_id):
+        if (request.user.institute==ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             if note_name:
                 note.name = note_name
             if note_content:
                 note.content = note_content
             note.save()
             proxy=QueryCacheProxy(request.user)
-            proxy.delete_LecNotes_cache(note.faculty.course.department.id,note.faculty.course.id,note.faculty.id)
+            proxy.delete_LecNotes_cache(ins_id, dept_id, course_id, fac_id)
             subject.notify(request, "Note has been updated")
         else:
             if note_name or note_content:
@@ -157,24 +157,24 @@ def update_note(request, dept_id, course_id, fac_id, note_id):
                 notification.recievers.add(*receivers)
                 notification.save()
                 subject.notify(request, "Request sent")
-    return redirect('lec_notes', dept_id, course_id, fac_id)
+    return redirect('lec_notes', ins_id, dept_id, course_id, fac_id)
 
 
 # Update Video
 @login_required
-def update_video(request, dept_id, course_id, fac_id, video_id):
+def update_video(request, ins_id,dept_id, course_id, fac_id, video_id):
     video = get_object_or_404(Video, id=video_id)
     if request.method == 'POST':
         video_name = request.POST.get('videoName')
         video_content = request.FILES.get('videoContent')
-        if (request.user.role == 'master') or (request.user.department == dept_id) or (request.user.course == course_id):
+        if (request.user.institute==ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             if video_name:
                 video.name = video_name
             if video_content:
                 video.content = video_content
             video.save()
             proxy=QueryCacheProxy(request.user)
-            proxy.delete_LecVideos_cache(video.faculty.course.department.id,video.faculty.course.id,video.faculty.id)
+            proxy.delete_LecVideos_cache(ins_id, dept_id, course_id, fac_id)
             subject.notify(request, "Video has been updated")
         else:
             if video_name or video_content:
@@ -192,4 +192,4 @@ def update_video(request, dept_id, course_id, fac_id, video_id):
                 notification.recievers.add(*receivers)
                 notification.save()
                 subject.notify(request, "Request sent")
-    return redirect('lec_videos', dept_id, course_id, fac_id)
+    return redirect('lec_videos', ins_id, dept_id, course_id, fac_id)
