@@ -15,7 +15,7 @@
     >
       <!-- Department Image and Word Cloud Banner -->
       <a
-        href="{% url 'course_facs' dept_id=department.id course_id=course.id %}"
+        href="{% url 'course_facs' ins_id=institute.id dept_id=department.id course_id=course.id %}"
       >
         <img
           src="{{ course.image.url }}"
@@ -88,7 +88,7 @@
   <!-- Back Button (placed outside the grid) -->
   <div class="mt-10">
     <a
-      href="{% url 'departments' %}"
+      href="{% url 'departments' ins_id=institute.id %}"
       class="inline-block bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
     >
       ← Back to Departments

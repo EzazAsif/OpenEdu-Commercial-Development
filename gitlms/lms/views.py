@@ -9,8 +9,8 @@ from .queryProxy import QueryCacheProxy
 
 @login_required
 def institutes(request):
-    institutes=Institute.objects.all()
-    print("hi",institutes)
+    institutes_proxy = QueryCacheProxy(request.user)
+    institutes = institutes_proxy.get_institutes()  # Fetch departments via the proxy
     context={
         'institutes':institutes
     }
@@ -22,7 +22,7 @@ def institutes(request):
 @login_required
 def departments(request,ins_id):
     department_proxy = QueryCacheProxy(request.user)
-    departments = department_proxy.get_departments()  # Fetch departments via the proxy
+    departments,institute = department_proxy.get_departments(ins_id)  # Fetch departments via the proxy
     
     # Determine the visibility of the modal and button based on the user's role
     showDeptModal = (request.user.role == 'master')
@@ -31,7 +31,7 @@ def departments(request,ins_id):
     
     # Prepare the context with user and departments information
     context = {
-        'ins_id':ins_id,
+        'institute':institute,
         'name': request.user.username,
         'departments': departments,
         'showDeptModal': showDeptModal,
@@ -57,11 +57,11 @@ def courses(request):
 def deptcourses(request,ins_id,id):
     course_proxy = QueryCacheProxy(request.user)
     
-    courses,department = course_proxy.get_deptCourses(id)  # Fetch departments via the pr
+    courses,department,institute = course_proxy.get_deptCourses(ins_id,id)  # Fetch departments via the pr
     showAddButton=(request.user.role=='master')or(request.user.department==department.id)
     showUpdateCourseModal=(request.user.role=='master')or(request.user.department==department.id)
     showCourseModal=(request.user.role=='master')or(request.user.department==department.id)
-    context={'name':request.user.username,'courses':courses , 'department': department,
+    context={'name':request.user.username,'courses':courses , 'department': department,'institute':institute,
              'showCourseModal':showCourseModal,'showUpdateCourseModal':showUpdateCourseModal,'showAddButton':showAddButton}
     return render(request,'lms/deptcourses.html',context)
 
