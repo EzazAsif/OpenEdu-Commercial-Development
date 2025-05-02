@@ -5,19 +5,21 @@ from django.contrib.auth.decorators import login_required
 class QueryCacheProxy:
     def __init__(self, user):
         self.user = user
+    @login_required
     def _get_institute(self, ins_id):
         key = f'institute_obj:{ins_id}'
-        Institute = cache.get(key)
-        if Institute:
-            print(Institute)
-        if not Institute:
+        institute = cache.get(key)
+        if institute:
+            print(institute)
+        if not institute:
             print("Institute not cached")
-            Institute = Institute.objects.get(id=ins_id)
-            cache.set(key, Institute, timeout=60 * 15)
-        return Institute
-
-    def _get_department(self, dept_id):
-        key = f'department_obj:{dept_id}'
+            institute = Institute.objects.get(id=ins_id)
+            cache.set(key, institute, timeout=60 * 15)
+        return institute
+    @login_required
+    def _get_department(self, ins_id,dept_id):
+        institute=self._get_institute(ins_id)
+        key = f'department_obj:{ ins_id}:{dept_id}'
         department = cache.get(key)
         if department:
             print(department)
@@ -25,13 +27,13 @@ class QueryCacheProxy:
             print("Department not cached")
             department = Department.objects.get(id=dept_id)
             cache.set(key, department, timeout=60 * 15)
-        return department
-
-    def _get_course(self, dept_id, course_id):
+        return department,institute
+    @login_required
+    def _get_course(self,  ins_id,dept_id, course_id):
         
-        course_key = f'course_obj:{dept_id}:{course_id}'
+        course_key = f'course_obj:{ ins_id}:{dept_id}:{course_id}'
 
-        department = self._get_department(dept_id)
+        institute,department = self._get_department(dept_id)
         
         course = cache.get(course_key)
         if course:
@@ -41,11 +43,11 @@ class QueryCacheProxy:
             course = Course.objects.get(id=course_id, department=department)
             cache.set(course_key, course, timeout=60 * 15)
 
-        return course, department
-
-    def _get_faculty(self, dept_id, course_id, fac_id):
-        course, department = self._get_course(dept_id, course_id)
-        faculty_key = f'faculty_obj:{dept_id}:{course_id}:{fac_id}'
+        return course, department,institute
+    @login_required
+    def _get_faculty(self, ins_id, dept_id, course_id, fac_id):
+        course, department,institute = self._get_course(dept_id, course_id)
+        faculty_key = f'faculty_obj:{ ins_id}:{dept_id}:{course_id}:{fac_id}'
 
         faculty = cache.get(faculty_key)
         if faculty:
@@ -55,12 +57,24 @@ class QueryCacheProxy:
             faculty = Faculty.objects.get(id=fac_id, course=course)
             cache.set(faculty_key, faculty, timeout=60 * 15)
 
-        return faculty, course, department
-
+        return faculty, course, department,institute
 
     @login_required
-    def get_departments(self):
-        key = 'all_departments'
+    def get_institutes(self):
+        key = 'all_institutes'
+        institutes = cache.get(key)
+        if institutes:
+            print(institutes)
+        if not institutes:
+            print("institutes not cached yet")
+            institutes = Institute.objects.all().order_by('name')
+            cache.set(key, institutes, timeout=60 * 15)
+        return institutes
+    
+    @login_required
+    def get_departments(self,ins_id):
+        institute=self._get_institute(ins_id)
+        key = f'institute?{institute.id}'
         departments = cache.get(key)
         if departments:
             print(departments)
@@ -68,12 +82,12 @@ class QueryCacheProxy:
             print("Departments not cached yet")
             departments = Department.objects.all().order_by('name')
             cache.set(key, departments, timeout=60 * 15)
-        return departments
+        return departments,institute
 
     @login_required
-    def get_deptCourses(self, dept_id):
-        department = self._get_department(dept_id)
-        key = f'department?{department.id}'
+    def get_deptCourses(self,ins_id, dept_id):
+        department,institute = self._get_department(ins_id,dept_id)
+        key = f'institute?{institute.id}/department?{department.id}'
         courses = cache.get(key)
         if courses:
             print(courses)
@@ -81,7 +95,7 @@ class QueryCacheProxy:
             print("Courses not cached yet")
             courses = Course.objects.filter(department=department).order_by('course_name')
             cache.set(key, courses, timeout=60 * 15)
-        return courses, department
+        return courses, department,institute
 
     @login_required
     def get_courseFacs(self, dept_id, course_id):
