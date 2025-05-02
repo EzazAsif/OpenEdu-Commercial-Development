@@ -8,7 +8,7 @@
     <h2 class="text-xl font-semibold mb-4">Add New Note</h2>
     <form
       enctype="multipart/form-data"
-      action="{% url 'add_note' department.id  course.id faculty.id%}"
+      action="{% url 'add_note' institute.id department.id  course.id faculty.id%}"
       method="POST"
       id="addNoteForm"
     >
