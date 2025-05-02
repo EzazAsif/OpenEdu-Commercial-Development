@@ -13,11 +13,7 @@
           >Home</a
         >
       </li>
-      <li class="mb-4">
-        <a href="{%url 'courses'%}" class="block p-2 hover:bg-blue-700 rounded"
-          >All Courses</a
-        >
-      </li>
+      
       <li class="mb-4">
         <a href="{%url 'students'%}" class="block p-2 hover:bg-blue-700 rounded"
           >Students</a
@@ -31,9 +27,9 @@
           >Appoint Roles</a
         >
       </li>
-      {% endif %} {% if request.user.department != -1 %}
+      {% endif %} {% if request.user.department != -1 and institute.id %}
       <li class="mb-4">
-        <a href="#}" class="block p-2 hover:bg-blue-700 rounded"
+        <a href="{% url 'deptcourses' institute.id request.user.department %}" class="block p-2 hover:bg-blue-700 rounded"
           >Your Department</a
         >
       </li>

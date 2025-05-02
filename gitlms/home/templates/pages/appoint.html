@@ -97,6 +97,7 @@
 
 <script>
   requestUserRole = "{{ request.user.role }}";
+  requestUserInstitute = {{ request.user.institute }};
   requestUserDepartment = {{ request.user.department }};
 </script>
 <script src="{% static 'js/appointDropDown.js' %}"></script>
