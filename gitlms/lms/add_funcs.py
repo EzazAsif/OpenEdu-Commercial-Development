@@ -19,7 +19,7 @@ subject.attach(messageObserver)
 def add_dept(request,ins_id):
     if (request.user.institute!=ins_id):
         return redirect('illegalactivity')
-    proxy=QueryCacheProxy(request.id)
+    proxy=QueryCacheProxy(request.user)
     Institute=proxy._get_institute(ins_id)
     if request.method == 'POST':
         dept_name = request.POST.get('departmentName')
