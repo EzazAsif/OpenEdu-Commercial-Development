@@ -91,7 +91,7 @@
         {% endif %}
         <!-- Clickable Card Link -->
         <a
-          href="{% url 'fac_lecs' department.id course.id faculty.id %}"
+          href="{% url 'fac_lecs' institute.id department.id course.id faculty.id %}"
           class="flex flex-col items-center justify-center"
         >
           <!-- Enlarged Image -->
@@ -122,7 +122,7 @@
 
   <!-- Back to Departments Button -->
   <a
-    href="{% url 'departments' %}"
+    href="{% url 'deptcourses' ins_id=institute.id id=department.id %}"
     class="mt-6 inline-block bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
   >
     ← Back to Courses

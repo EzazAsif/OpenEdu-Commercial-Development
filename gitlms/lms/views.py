@@ -72,11 +72,11 @@ def deptcourses(request,ins_id,id):
 @login_required
 def course_facs(request, ins_id,dept_id, course_id):
     faculty_proxy = QueryCacheProxy(request.user)
-    faculties,department,course = faculty_proxy.get_courseFacs(dept_id,course_id)
+    faculties,course,department,institute = faculty_proxy.get_courseFacs(ins_id,dept_id,course_id)
     showFacultyModal=(request.user.role=='master')or(request.user.department==department.id)or(request.user.course==course.id)
     showUpdateFacultyModal=(request.user.role=='master')or(request.user.department==department.id)or(request.user.course==course.id)
     showAddButton=(request.user.role=='master')or(request.user.department==department.id)or(request.user.course==course.id)
-    context = {'department': department, 'faculties': faculties,'course':course,
+    context = {'institute':institute,'department': department, 'faculties': faculties,'course':course,
                'showFacultyModal':showFacultyModal,'showUpdateFacultyModal':showUpdateFacultyModal,'showAddButton':showAddButton}
     return render(request, 'lms/faculty.html', context)
 
