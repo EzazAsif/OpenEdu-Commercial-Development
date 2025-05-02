@@ -16,8 +16,8 @@ subject.attach(messageObserver)
 
 # Add Department
 @login_required
-def add_dept(request):
-    if (request.user.role!='master'):
+def add_dept(request,ins_id):
+    if (request.user.institute!=ins_id):
         return redirect('illegalactivity')
     if request.method == 'POST':
         dept_name = request.POST.get('departmentName')
@@ -39,8 +39,8 @@ def add_dept(request):
 
 # Add Course
 @login_required
-def add_course(request, dept_id):
-    if (request.user.role!='master')and(request.user.department!= dept_id):
+def add_course(request,ins_id, dept_id):
+    if (request.user.institute!=ins_id)and(request.user.department!= dept_id):
         return redirect('illegalactivity')
     department=get_object_or_404(Department,id=dept_id)
     if request.method == 'POST':
@@ -64,8 +64,8 @@ def add_course(request, dept_id):
 
 # Add Faculty
 @login_required
-def add_fac(request, dept_id, course_id):
-    if (request.user.role!='master')and(request.user.department!= dept_id)and(request.user.course!= course_id):
+def add_fac(request,ins_id, dept_id, course_id):
+    if (request.user.institute!=ins_id)and(request.user.department!= dept_id)and(request.user.course!= course_id):
         return redirect('illegalactivity')
     course = get_object_or_404(Course, id=course_id)
     if request.method == 'POST':
@@ -85,12 +85,12 @@ def add_fac(request, dept_id, course_id):
  
 # Add Slide
 @login_required
-def add_slide(request, dept_id, course_id, fac_id):
+def add_slide(request,ins_id, dept_id, course_id, fac_id):
     faculty = get_object_or_404(Faculty, id=fac_id)
     if request.method == 'POST':
         slide_name = request.POST.get('slideName')
         slide_content = request.FILES.get('slideContent')
-        if (request.user.role == 'master') or (request.user.department == dept_id) or (request.user.course == course_id):
+        if (request.user.institute!=ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             SlideFactory.create_content(faculty, slide_name, slide_content)
             proxy=QueryCacheProxy(request.user)
             proxy.delete_LecSlides_cache(faculty.course.department.id,faculty.course.id,faculty.id)
@@ -112,12 +112,12 @@ def add_slide(request, dept_id, course_id, fac_id):
     return redirect('lec_slides', dept_id, course_id, fac_id)
 # Add Note
 @login_required
-def add_note(request, dept_id, course_id, fac_id):
+def add_note(request,ins_id, dept_id, course_id, fac_id):
     faculty = get_object_or_404(Faculty, id=fac_id)
     if request.method == 'POST':
         note_name = request.POST.get('noteName')
         note_content = request.FILES.get('noteContent')
-        if (request.user.role == 'master') or (request.user.department == dept_id) or (request.user.course == course_id):
+        if (request.user.institute!=ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             NoteFactory.create_content( faculty, note_name, note_content)
             proxy=QueryCacheProxy(request.user)
             proxy.delete_LecNotes_cache(faculty.course.department.id,faculty.course.id,faculty.id)
@@ -140,12 +140,12 @@ def add_note(request, dept_id, course_id, fac_id):
 
 # Add Video
 @login_required
-def add_video(request, dept_id, course_id, fac_id):
+def add_video(request,ins_id, dept_id, course_id, fac_id):
     faculty = get_object_or_404(Faculty, id=fac_id)
     if request.method == 'POST':
         video_name = request.POST.get('videoName')
         video_content = request.FILES.get('videoContent')
-        if (request.user.role == 'master') or (request.user.department == dept_id) or (request.user.course == course_id):
+        if (request.user.institute!=ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             VideoFactory.create_content( faculty, video_name, video_content)
             proxy=QueryCacheProxy(request.user)
             proxy.delete_LecVideos_cache(faculty.course.department.id,faculty.course.id,faculty.id)
