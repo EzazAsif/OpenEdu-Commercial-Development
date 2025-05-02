@@ -11,8 +11,11 @@ from .queryProxy import QueryCacheProxy
 def institutes(request):
     institutes_proxy = QueryCacheProxy(request.user)
     institutes = institutes_proxy.get_institutes()  # Fetch departments via the proxy
+    # Determine the visibility of the modal and button based on the user's role
     context={
-        'institutes':institutes
+        'institutes':institutes,
+     
+        'institute':institutes[0]
     }
 
     # Render the departments page with the context
@@ -25,9 +28,9 @@ def departments(request,ins_id):
     departments,institute = department_proxy.get_departments(ins_id)  # Fetch departments via the proxy
     
     # Determine the visibility of the modal and button based on the user's role
-    showDeptModal = (request.user.role == 'master')
-    showUpdateDeptModal = (request.user.role == 'master')
-    showAddButton = (request.user.role == 'master')
+    showDeptModal = (request.user.institute == ins_id)
+    showUpdateDeptModal = (request.user.institute == ins_id)
+    showAddButton = (request.user.institute == ins_id)
     
     # Prepare the context with user and departments information
     context = {
@@ -85,8 +88,9 @@ def course_facs(request, ins_id,dept_id, course_id):
 #for lectures inside a Faculty
 @login_required
 def fac_lecs(request, ins_id,dept_id, course_id,fac_id):
-    
-    context = {'department': dept_id, 'faculty': fac_id,'course':course_id,'MEDIA_URL':settings.MEDIA_URL}
+    lecture_proxy=QueryCacheProxy(request.user)
+    faculty,course,department,institute = lecture_proxy._get_faculty(ins_id,dept_id,course_id,fac_id)
+    context = {'institute':institute,'department': department, 'faculty': faculty,'course':course,'MEDIA_URL':settings.MEDIA_URL}
     return render(request, 'lms/lectures.html', context)
 
 #for slides inside a lecture

@@ -1,7 +1,8 @@
 {% extends 'dashboard.html' %} {% load static %} {% block content %}
 <div class="p-6 flex-grow" style="overflow: auto">
   <h2 class="text-2xl font-bold text-blue-900 mb-6">
-    {{ department.name }} -{{ course.course_name }} - Faculty Members
+    {{institute.name}} - {{ department.name }} -{{ course.course_name }} -
+    Faculty Members
   </h2>
 
   <!-- Faculty Cards -->
@@ -66,7 +67,7 @@
               Update
             </button>
             <button
-              onclick="window.location.href='{% url 'delete_fac' department.id course.id faculty.id %}';"
+              onclick="window.location.href='{% url 'delete_fac' institute.id department.id course.id faculty.id %}';"
               class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 flex items-center"
             >
               <svg
