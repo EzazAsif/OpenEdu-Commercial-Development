@@ -20,7 +20,7 @@ def institutes(request):
 
 
 @login_required
-def departments(request):
+def departments(request,ins_id):
     department_proxy = QueryCacheProxy(request.user)
     departments = department_proxy.get_departments()  # Fetch departments via the proxy
     
@@ -31,6 +31,7 @@ def departments(request):
     
     # Prepare the context with user and departments information
     context = {
+        'ins_id':ins_id,
         'name': request.user.username,
         'departments': departments,
         'showDeptModal': showDeptModal,
@@ -53,7 +54,7 @@ def courses(request):
 
 #for Courses inside a Department
 @login_required
-def deptcourses(request,id):
+def deptcourses(request,ins_id,id):
     course_proxy = QueryCacheProxy(request.user)
     
     courses,department = course_proxy.get_deptCourses(id)  # Fetch departments via the pr
@@ -69,7 +70,7 @@ def deptcourses(request,id):
 
 #for faculties inside a Course
 @login_required
-def course_facs(request, dept_id, course_id):
+def course_facs(request, ins_id,dept_id, course_id):
     faculty_proxy = QueryCacheProxy(request.user)
     faculties,department,course = faculty_proxy.get_courseFacs(dept_id,course_id)
     showFacultyModal=(request.user.role=='master')or(request.user.department==department.id)or(request.user.course==course.id)
@@ -83,14 +84,14 @@ def course_facs(request, dept_id, course_id):
 
 #for lectures inside a Faculty
 @login_required
-def fac_lecs(request, dept_id, course_id,fac_id):
+def fac_lecs(request, ins_id,dept_id, course_id,fac_id):
     
     context = {'department': dept_id, 'faculty': fac_id,'course':course_id,'MEDIA_URL':settings.MEDIA_URL}
     return render(request, 'lms/lectures.html', context)
 
 #for slides inside a lecture
 @login_required
-def lec_slides(request,dept_id, course_id,fac_id):
+def lec_slides(request,ins_id,dept_id, course_id,fac_id):
     slide_proxy = QueryCacheProxy(request.user)
     slides,department,course,faculty = slide_proxy.get_LecSlides(dept_id,course_id,fac_id)
     
@@ -103,7 +104,7 @@ def lec_slides(request,dept_id, course_id,fac_id):
 
 # For videos inside a lecture
 @login_required
-def lec_videos(request, dept_id, course_id, fac_id):
+def lec_videos(request, ins_id,dept_id, course_id, fac_id):
     video_proxy = QueryCacheProxy(request.user)
     videos,department,course,faculty = video_proxy.get_LecVideos(dept_id,course_id,fac_id)
     context = {'department': department, 'faculty': faculty, 'course': course, 'videos': videos,'showVideoModal':True,'showUpdateVideoModal':True,'showAddButton':True}
@@ -113,7 +114,7 @@ def lec_videos(request, dept_id, course_id, fac_id):
 
 # For notes inside a lecture
 @login_required
-def lec_notes(request, dept_id, course_id, fac_id):
+def lec_notes(request,ins_id, dept_id, course_id, fac_id):
     note_proxy = QueryCacheProxy(request.user)
     notes,department,course,faculty = note_proxy.get_LecNotes(dept_id,course_id,fac_id)
     context = {'department': department, 'faculty': faculty, 'course': course, 'notes': notes,'showNoteModal':True,'showUpdateNoteModal':True,'showAddButton':True}

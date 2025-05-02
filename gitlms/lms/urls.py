@@ -8,15 +8,15 @@ from .delete_funcs import *
 urlpatterns = []
 
 navigatelms=[
-
+    path('', institutes, name='institutes'),
     path('institutes', institutes, name='institutes'),
-    path('departments', departments, name='departments'),
-    path('department=<int:id>/', deptcourses, name='deptcourses'),
-    path('department=<int:dept_id>/course=<int:course_id>', course_facs, name='course_facs'),
-    path('department=<int:dept_id>/course=<int:course_id>/faculty=<int:fac_id>',fac_lecs, name='fac_lecs'),
-    path('department=<int:dept_id>/course=<int:course_id>/faculty=<int:fac_id>/Lectures/slides',lec_slides, name='lec_slides'),
-    path('department=<int:dept_id>/course=<int:course_id>/faculty=<int:fac_id>/Lectures/videos', lec_videos, name='lec_videos'),
-    path('department=<int:dept_id>/course=<int:course_id>/faculty=<int:fac_id>/Lectures/notes', lec_notes, name='lec_notes'),
+    path('institute=<int:ins_id>', departments, name='departments'),
+    path('institute=<int:ins_id>/department=<int:id>/', deptcourses, name='deptcourses'),
+    path('institute=<int:ins_id>/department=<int:dept_id>/course=<int:course_id>', course_facs, name='course_facs'),
+    path('institute=<int:ins_id>/department=<int:dept_id>/course=<int:course_id>/faculty=<int:fac_id>',fac_lecs, name='fac_lecs'),
+    path('institute=<int:ins_id>/department=<int:dept_id>/course=<int:course_id>/faculty=<int:fac_id>/Lectures/slides',lec_slides, name='lec_slides'),
+    path('institute=<int:ins_id>/department=<int:dept_id>/course=<int:course_id>/faculty=<int:fac_id>/Lectures/videos', lec_videos, name='lec_videos'),
+    path('institute=<int:ins_id>/department=<int:dept_id>/course=<int:course_id>/faculty=<int:fac_id>/Lectures/notes', lec_notes, name='lec_notes'),
 ]
 
 showcontents=[

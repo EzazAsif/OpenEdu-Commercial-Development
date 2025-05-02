@@ -13,7 +13,7 @@
 
       <!-- Department Image and Word Cloud Banner -->
       <a
-        href="{% url 'deptcourses' id=department.id %}"
+        href="{% url 'deptcourses' ins_id=ins_id id=department.id %}"
         class="block relative min-h-[140px]"
       >
         <div
@@ -68,7 +68,7 @@
       {% endif %}
       <!-- Department Description -->
       <a
-        href="{% url 'deptcourses' id=department.id %}"
+        href="{% url 'deptcourses' ins_id=ins_id id=department.id %}"
         class="block p-6 flex-grow text-decoration-none hover:bg-gray-50 transition-all duration-300"
       >
         <p class="text-gray-700 text-sm">{{ department.description }}</p>

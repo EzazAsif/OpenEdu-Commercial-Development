@@ -5,7 +5,7 @@ from lms.models import Department,Course
 
 def home(request):
     if request.user.is_authenticated:
-        return redirect('departments')
+        return redirect('institutes')
     else:
         return redirect('welcome')
 
