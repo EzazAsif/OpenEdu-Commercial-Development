@@ -5,6 +5,7 @@ class User(AbstractUser):
     contact = models.CharField(max_length=15, blank=True, null=True)
     profilepicture = models.ImageField(upload_to='images/profilepictures', blank=True, null=True,default='images/profilepictures/rafid1.jpg')
     role=models.TextField(default='user')
+    institute=models.IntegerField(default=-1)
     course=models.IntegerField(default=-1)
     department=models.IntegerField(default=-1)
     groups = models.ManyToManyField(
