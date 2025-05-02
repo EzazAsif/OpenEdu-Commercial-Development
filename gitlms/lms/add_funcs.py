@@ -19,12 +19,14 @@ subject.attach(messageObserver)
 def add_dept(request,ins_id):
     if (request.user.institute!=ins_id):
         return redirect('illegalactivity')
+    proxy=QueryCacheProxy(request.id)
+    Institute=proxy._get_institute(ins_id)
     if request.method == 'POST':
         dept_name = request.POST.get('departmentName')
         dept_desc = request.POST.get('departmentDescription')
         dept_image = request.FILES.get('departmentImage')
         if(dept_name  ):
-            department=Department.objects.create( name=dept_name   )
+            department=Department.objects.create( name=dept_name , institute= Institute)
             if(dept_image):
                 department.image=dept_image
             if( dept_desc):
