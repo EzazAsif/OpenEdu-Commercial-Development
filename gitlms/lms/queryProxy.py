@@ -33,7 +33,7 @@ class QueryCacheProxy:
         
         course_key = f'course_obj:{ ins_id}:{dept_id}:{course_id}'
 
-        institute,department = self._get_department(dept_id)
+        department, institute = self._get_department(ins_id,dept_id)
         
         course = cache.get(course_key)
         if course:
@@ -46,8 +46,8 @@ class QueryCacheProxy:
         return course, department,institute
     @login_required
     def _get_faculty(self, ins_id, dept_id, course_id, fac_id):
-        course, department,institute = self._get_course(dept_id, course_id)
-        faculty_key = f'faculty_obj:{ ins_id}:{dept_id}:{course_id}:{fac_id}'
+        course, department,institute = self._get_course(ins_id,dept_id, course_id)
+        faculty_key = f'faculty_obj:{ins_id}:{ ins_id}:{dept_id}:{course_id}:{fac_id}'
 
         faculty = cache.get(faculty_key)
         if faculty:
@@ -98,9 +98,9 @@ class QueryCacheProxy:
         return courses, department,institute
 
     @login_required
-    def get_courseFacs(self, dept_id, course_id):
-        course, department = self._get_course(dept_id, course_id)
-        key = f'department?{department.id}/course?{course.id}'
+    def get_courseFacs(self,ins_id, dept_id, course_id):
+        course, department,institute = self._get_course(ins_id,dept_id, course_id)
+        key = f'institute?{institute.id}/department?{department.id}/course?{course.id}'
         faculties = cache.get(key)
         if faculties:
             print(faculties)
@@ -108,12 +108,12 @@ class QueryCacheProxy:
             print("Faculties not cached yet")
             faculties = Faculty.objects.filter(course=course).order_by('name')
             cache.set(key, faculties, timeout=60 * 15)
-        return faculties, department, course
+        return faculties,  course,department,institute
 
     @login_required
     def get_LecSlides(self, dept_id, course_id, fac_id):
         faculty, course, department = self._get_faculty(dept_id, course_id, fac_id)
-        key = f'department?{department.id}/course?{course.id}/faculty?{faculty.id}/Lectures/Slides'
+        key = f'institute?{institute.id}/department?{department.id}/course?{course.id}/faculty?{faculty.id}/Lectures/Slides'
         slides = cache.get(key)
         if slides:
             print(slides)
@@ -126,7 +126,7 @@ class QueryCacheProxy:
     @login_required
     def get_LecVideos(self, dept_id, course_id, fac_id):
         faculty, course, department = self._get_faculty(dept_id, course_id, fac_id)
-        key = f'department?{department.id}/course?{course.id}/faculty?{faculty.id}/Lectures/Videos'
+        key = f'institute?{institute.id}/department?{department.id}/course?{course.id}/faculty?{faculty.id}/Lectures/Videos'
         videos = cache.get(key)
         if videos:
             print(videos)
@@ -139,7 +139,7 @@ class QueryCacheProxy:
     @login_required
     def get_LecNotes(self, dept_id, course_id, fac_id):
         faculty, course, department = self._get_faculty(dept_id, course_id, fac_id)
-        key = f'department?{department.id}/course?{course.id}/faculty?{faculty.id}/Lectures/Notes'
+        key = f'institute?{institute.id}/department?{department.id}/course?{course.id}/faculty?{faculty.id}/Lectures/Notes'
         notes = cache.get(key)
         if notes:
             print(notes)
@@ -151,14 +151,19 @@ class QueryCacheProxy:
 
     # Cache deletion methods
     @login_required
-    def delete_departments_cache(self):
-        cache.delete('all_departments')
+    def delete_institutes_cache(self):
+        cache.delete('all_institutes')
         print("Deleted cache for: all_departments")
 
     @login_required
-    def delete_deptCourses_cache(self, dept_id):
-        cache.delete(f'department?{dept_id}')
-        print(f"Deleted cache for: department?{dept_id}")
+    def delete_departments_cache(self,ins_id):
+        cache.delete(f'institute?{ins_id}')
+        print(f"Deleted cache for: institute?{ins_id}")
+
+    @login_required
+    def delete_deptCourses_cache(self,ins_id, dept_id):
+        cache.delete(f'institute?{ins_id}/department?{dept_id}')
+        print(f"Deleted cache for: institute?{ins_id}/department?{dept_id}")
 
     @login_required
     def delete_courseFacs_cache(self, dept_id, course_id):
