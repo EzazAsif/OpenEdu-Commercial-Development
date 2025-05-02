@@ -112,7 +112,7 @@ def approve_not(request, not_id):
             notification.save()
             # Delete the temporary content instance after approval
             temp_content.delete()
-            contenDeleteProxy(real_content.faculty.course.department.id,real_content.faculty.course.id,real_content.faculty.id)
+            contenDeleteProxy(real_content.faculty.course.department.institute.id,real_content.faculty.course.department.id,real_content.faculty.course.id,real_content.faculty.id)
             
 
 

@@ -15,6 +15,7 @@ class SlideUploadStrategy(UploadStrategy):
     def get_upload_to(self, instance, filename):
         return os.path.join(
             'contents',
+            instance.faculty.course.department.institute.name,
             instance.faculty.course.department.name,
             instance.faculty.course.course_name,
             instance.faculty.name,
@@ -27,6 +28,7 @@ class VideoUploadStrategy(UploadStrategy):
     def get_upload_to(self, instance, filename):
         return os.path.join(
             'contents',
+            instance.faculty.course.department.institute.name,
             instance.faculty.course.department.name,
             instance.faculty.course.course_name,
             instance.faculty.name,
@@ -39,6 +41,7 @@ class NoteUploadStrategy(UploadStrategy):
     def get_upload_to(self, instance, filename):
         return os.path.join(
             'contents',
+            instance.faculty.course.department.institute.name,
             instance.faculty.course.department.name,
             instance.faculty.course.course_name,
             instance.faculty.name,
@@ -55,6 +58,7 @@ class TempSlideUploadStrategy(UploadStrategy):
                 # Construct the file upload path using the 'real' instance
                 return os.path.join(
                     'contents',
+                    instance.faculty.course.department.institute.name,
                     instance.real.faculty.course.department.name,
                     instance.real.faculty.course.course_name,
                     instance.real.faculty.name,
@@ -80,6 +84,7 @@ class TempVideoUploadStrategy(UploadStrategy):
         if hasattr(instance, 'real') and instance.real:
             return os.path.join(
                 'contents',
+                instance.faculty.course.department.institute.name,
                 instance.real.faculty.course.department.name,
                 instance.real.faculty.course.course_name,
                 instance.real.faculty.name,
@@ -101,6 +106,7 @@ class TempNoteUploadStrategy(UploadStrategy):
         if hasattr(instance, 'real') and instance.real:
             return os.path.join(
                 'contents',
+                instance.faculty.course.department.institute.name,
                 instance.real.faculty.course.department.name,
                 instance.real.faculty.course.course_name,
                 instance.real.faculty.name,

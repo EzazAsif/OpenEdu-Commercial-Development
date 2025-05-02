@@ -31,11 +31,11 @@ def add_dept(request,ins_id):
                 department.description=dept_desc
         department.save()
         proxy=QueryCacheProxy(request.user)
-        proxy.delete_departments_cache()
+        proxy.delete_departments_cache(ins_id)
         subject.notify(request, "Department has been added")
-        return redirect('departments')
+        return redirect('departments',ins_id)
     
-    return redirect('departments')
+    return redirect('departments',ins_id)
 
 # Add Course
 @login_required
@@ -56,9 +56,9 @@ def add_course(request,ins_id, dept_id):
                 course.image=course_image
         course.save()
         proxy=QueryCacheProxy(request.user)
-        proxy.delete_deptCourses_cache(department.id)
+        proxy.delete_deptCourses_cache(ins_id, dept_id)
         subject.notify(request, "Course has been added")
-    return redirect('deptcourses',department.id)
+    return redirect('deptcourses',ins_id, dept_id)
 
 
 
@@ -78,9 +78,9 @@ def add_fac(request,ins_id, dept_id, course_id):
                 faculty.image=image
             faculty.save()
             proxy=QueryCacheProxy(request.user)
-            proxy.delete_courseFacs_cache(course.department.id,course.id)
+            proxy.delete_courseFacs_cache(ins_id, dept_id, course_id)
         subject.notify(request, "Faculty has been added")
-    return redirect('course_facs',dept_id,course_id)
+    return redirect('course_facs',ins_id, dept_id, course_id)
     
  
 # Add Slide
@@ -90,10 +90,10 @@ def add_slide(request,ins_id, dept_id, course_id, fac_id):
     if request.method == 'POST':
         slide_name = request.POST.get('slideName')
         slide_content = request.FILES.get('slideContent')
-        if (request.user.institute!=ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
+        if (request.user.institute==ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             SlideFactory.create_content(faculty, slide_name, slide_content)
             proxy=QueryCacheProxy(request.user)
-            proxy.delete_LecSlides_cache(faculty.course.department.id,faculty.course.id,faculty.id)
+            proxy.delete_LecSlides_cache(ins_id, dept_id, course_id, fac_id)
             subject.notify(request, "Slide has been added")
         else:
             temp_slide=TemporarySlideFactory.create_temp_content(real_instance=None, faculty=faculty, name=slide_name, content_file=slide_content)
@@ -109,7 +109,7 @@ def add_slide(request,ins_id, dept_id, course_id, fac_id):
             notification.recievers.add(*receivers)
             notification.save()
             subject.notify(request, "Request sent")
-    return redirect('lec_slides', dept_id, course_id, fac_id)
+    return redirect('lec_slides', ins_id, dept_id, course_id, fac_id)
 # Add Note
 @login_required
 def add_note(request,ins_id, dept_id, course_id, fac_id):
@@ -117,10 +117,10 @@ def add_note(request,ins_id, dept_id, course_id, fac_id):
     if request.method == 'POST':
         note_name = request.POST.get('noteName')
         note_content = request.FILES.get('noteContent')
-        if (request.user.institute!=ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
+        if (request.user.institute==ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             NoteFactory.create_content( faculty, note_name, note_content)
             proxy=QueryCacheProxy(request.user)
-            proxy.delete_LecNotes_cache(faculty.course.department.id,faculty.course.id,faculty.id)
+            proxy.delete_LecNotes_cache(ins_id, dept_id, course_id, fac_id)
             subject.notify(request, "Note has been added")
         else:
             temp_note=TemporaryNoteFactory.create_temp_content( real_instance=None, faculty=faculty, name=note_name, content_file=note_content)
@@ -135,7 +135,7 @@ def add_note(request,ins_id, dept_id, course_id, fac_id):
             notification.recievers.add(*receivers)
             notification.save()
             subject.notify(request, "Request sent")
-    return redirect('lec_notes', dept_id, course_id, fac_id)
+    return redirect('lec_notes', ins_id, dept_id, course_id, fac_id)
 
 
 # Add Video
@@ -145,10 +145,10 @@ def add_video(request,ins_id, dept_id, course_id, fac_id):
     if request.method == 'POST':
         video_name = request.POST.get('videoName')
         video_content = request.FILES.get('videoContent')
-        if (request.user.institute!=ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
+        if (request.user.institute==ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             VideoFactory.create_content( faculty, video_name, video_content)
             proxy=QueryCacheProxy(request.user)
-            proxy.delete_LecVideos_cache(faculty.course.department.id,faculty.course.id,faculty.id)
+            proxy.delete_LecVideos_cache(ins_id, dept_id, course_id, fac_id)
             subject.notify(request, "Video has been added")
         else:
             temp_video=TemporaryVideoFactory.create_temp_content( real_instance=None, faculty=faculty, name=video_name, content_file=video_content)
@@ -163,4 +163,4 @@ def add_video(request,ins_id, dept_id, course_id, fac_id):
             notification.recievers.add(*receivers)
             notification.save()
             subject.notify(request, "Request sent")
-    return redirect('lec_videos', dept_id, course_id, fac_id)
+    return redirect('lec_videos', ins_id, dept_id, course_id, fac_id)
