@@ -166,21 +166,21 @@ class QueryCacheProxy:
         print(f"Deleted cache for: institute?{ins_id}/department?{dept_id}")
 
     @login_required
-    def delete_courseFacs_cache(self, dept_id, course_id):
-        cache.delete(f'department?{dept_id}/course?{course_id}')
-        print(f"Deleted cache for: department?{dept_id}/course?{course_id}")
+    def delete_courseFacs_cache(self,ins_id, dept_id, course_id):
+        cache.delete(f'institute?{ins_id}/department?{dept_id}/course?{course_id}')
+        print(f"Deleted cache for: institute?{ins_id}/department?{dept_id}/course?{course_id}")
 
     @login_required
-    def delete_LecSlides_cache(self, dept_id, course_id, fac_id):
-        cache.delete(f'department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Slides')
-        print(f"Deleted cache for: department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Slides")
+    def delete_LecSlides_cache(self,ins_id, dept_id, course_id, fac_id):
+        cache.delete(f'institute?{ins_id}/department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Slides')
+        print(f"Deleted cache for: institute?{ins_id}/department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Slides")
 
     @login_required
-    def delete_LecVideos_cache(self, dept_id, course_id, fac_id):
-        cache.delete(f'department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Videos')
-        print(f"Deleted cache for: department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Videos")
+    def delete_LecVideos_cache(self,ins_id, dept_id, course_id, fac_id):
+        cache.delete(f'institute?{ins_id}/department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Videos')
+        print(f"Deleted cache for: institute?{ins_id}/department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Videos")
 
     @login_required
-    def delete_LecNotes_cache(self, dept_id, course_id, fac_id):
-        cache.delete(f'department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Notes')
-        print(f"Deleted cache for: department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Notes")
+    def delete_LecNotes_cache(self,ins_id, dept_id, course_id, fac_id):
+        cache.delete(f'institute?{ins_id}/department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Notes')
+        print(f"Deleted cache for: institute?{ins_id}/department?{dept_id}/course?{course_id}/faculty?{fac_id}/Lectures/Notes")
