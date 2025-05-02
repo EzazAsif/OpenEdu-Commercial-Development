@@ -9,7 +9,7 @@
     <form
       enctype="multipart/form-data"
       method="POST"
-      action="{% url 'add_course' department.id %}"
+      action="{% url 'add_course' institute.id department.id %}"
     >
       {% csrf_token %}
       <!-- Added enctype for file uploads -->

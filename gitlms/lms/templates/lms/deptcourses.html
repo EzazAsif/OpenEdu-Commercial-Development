@@ -2,7 +2,7 @@
 
 <div class="p-6 flex-grow" style="overflow: auto">
   <h2 class="text-2xl font-bold text-blue-900 mb-6">
-    {{ department.name }} - Courses
+    {{institute.name}} - {{ department.name }} - Courses
   </h2>
 
   <!-- Grid of Courses -->
@@ -72,7 +72,7 @@
           </button>
           <button
             class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 flex items-center"
-            onclick="window.location.href='{% url 'delete_course' department.id course.id %}';"
+            onclick="window.location.href='{% url 'delete_course' institute.id department.id course.id %}';"
           >
             Delete
           </button>

@@ -111,8 +111,8 @@ class QueryCacheProxy:
         return faculties,  course,department,institute
 
     @login_required
-    def get_LecSlides(self, dept_id, course_id, fac_id):
-        faculty, course, department = self._get_faculty(dept_id, course_id, fac_id)
+    def get_LecSlides(self,ins_id, dept_id, course_id, fac_id):
+        faculty, course, department,institute = self._get_faculty(dept_id, course_id, fac_id)
         key = f'institute?{institute.id}/department?{department.id}/course?{course.id}/faculty?{faculty.id}/Lectures/Slides'
         slides = cache.get(key)
         if slides:
@@ -121,7 +121,7 @@ class QueryCacheProxy:
             print("Slides not cached yet")
             slides = Slide.objects.filter(faculty=faculty).order_by('-id')
             cache.set(key, slides, timeout=60 * 10)
-        return slides, department, course, faculty
+        return slides, faculty, course, department,institute
 
     @login_required
     def get_LecVideos(self, dept_id, course_id, fac_id):

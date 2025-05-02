@@ -8,7 +8,7 @@
     <h2 class="text-xl font-semibold mb-4">Add New Faculty</h2>
     <form
       enctype="multipart/form-data"
-      action="{% url 'add_fac' department.id  course.id %}"
+      action="{% url 'add_fac' institute.id department.id  course.id %}"
       method="post"
     >
       {% csrf_token %}
