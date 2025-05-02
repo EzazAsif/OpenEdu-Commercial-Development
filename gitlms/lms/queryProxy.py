@@ -112,7 +112,7 @@ class QueryCacheProxy:
 
     @login_required
     def get_LecSlides(self,ins_id, dept_id, course_id, fac_id):
-        faculty, course, department,institute = self._get_faculty(dept_id, course_id, fac_id)
+        faculty, course, department,institute = self._get_faculty(ins_id,dept_id, course_id, fac_id)
         key = f'institute?{institute.id}/department?{department.id}/course?{course.id}/faculty?{faculty.id}/Lectures/Slides'
         slides = cache.get(key)
         if slides:
@@ -124,8 +124,8 @@ class QueryCacheProxy:
         return slides, faculty, course, department,institute
 
     @login_required
-    def get_LecVideos(self, dept_id, course_id, fac_id):
-        faculty, course, department = self._get_faculty(dept_id, course_id, fac_id)
+    def get_LecVideos(self,ins_id, dept_id, course_id, fac_id):
+        faculty, course, department,institute = self._get_faculty(ins_id,dept_id, course_id, fac_id)
         key = f'institute?{institute.id}/department?{department.id}/course?{course.id}/faculty?{faculty.id}/Lectures/Videos'
         videos = cache.get(key)
         if videos:
@@ -134,11 +134,11 @@ class QueryCacheProxy:
             print("Videos not cached yet")
             videos = Video.objects.filter(faculty=faculty).order_by('-id')
             cache.set(key, videos, timeout=60 * 10)
-        return videos, department, course, faculty
+        return videos, faculty, course, department,institute
 
     @login_required
-    def get_LecNotes(self, dept_id, course_id, fac_id):
-        faculty, course, department = self._get_faculty(dept_id, course_id, fac_id)
+    def get_LecNotes(self,ins_id, dept_id, course_id, fac_id):
+        faculty, course, department,institute = self._get_faculty(ins_id,dept_id, course_id, fac_id)
         key = f'institute?{institute.id}/department?{department.id}/course?{course.id}/faculty?{faculty.id}/Lectures/Notes'
         notes = cache.get(key)
         if notes:
@@ -147,7 +147,7 @@ class QueryCacheProxy:
             print("Notes not cached yet")
             notes = Note.objects.filter(faculty=faculty).order_by('-id')
             cache.set(key, notes, timeout=60 * 10)
-        return notes, department, course, faculty
+        return notes, faculty, course, department,institute
 
     # Cache deletion methods
     @login_required

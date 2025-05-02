@@ -97,10 +97,10 @@ def fac_lecs(request, ins_id,dept_id, course_id,fac_id):
 @login_required
 def lec_slides(request,ins_id,dept_id, course_id,fac_id):
     slide_proxy = QueryCacheProxy(request.user)
-    slides,department,course,faculty = slide_proxy.get_LecSlides(dept_id,course_id,fac_id)
+    slides,faculty,course,department,institute = slide_proxy.get_LecSlides(ins_id,dept_id,course_id,fac_id)
     
     
-    context = {'department': department, 'faculty': faculty ,'course':course,'slides':slides,'showSlideModal':True,'showUpdateSlideModal':True,'showAddButton':True}
+    context = {'institute':institute,'department': department, 'faculty': faculty ,'course':course,'slides':slides,'showSlideModal':True,'showUpdateSlideModal':True,'showAddButton':True}
     
     return render(request,"lms/slides.html",context)
 
@@ -110,8 +110,8 @@ def lec_slides(request,ins_id,dept_id, course_id,fac_id):
 @login_required
 def lec_videos(request, ins_id,dept_id, course_id, fac_id):
     video_proxy = QueryCacheProxy(request.user)
-    videos,department,course,faculty = video_proxy.get_LecVideos(dept_id,course_id,fac_id)
-    context = {'department': department, 'faculty': faculty, 'course': course, 'videos': videos,'showVideoModal':True,'showUpdateVideoModal':True,'showAddButton':True}
+    videos,faculty,course,department,institute = video_proxy.get_LecVideos(ins_id,dept_id,course_id,fac_id)
+    context = {'institute':institute,'department': department, 'faculty': faculty, 'course': course, 'videos': videos,'showVideoModal':True,'showUpdateVideoModal':True,'showAddButton':True}
     return render(request, "lms/videos.html", context)
 
 
@@ -120,7 +120,7 @@ def lec_videos(request, ins_id,dept_id, course_id, fac_id):
 @login_required
 def lec_notes(request,ins_id, dept_id, course_id, fac_id):
     note_proxy = QueryCacheProxy(request.user)
-    notes,department,course,faculty = note_proxy.get_LecNotes(dept_id,course_id,fac_id)
-    context = {'department': department, 'faculty': faculty, 'course': course, 'notes': notes,'showNoteModal':True,'showUpdateNoteModal':True,'showAddButton':True}
+    notes,faculty,course,department,institute = note_proxy.get_LecNotes(ins_id,dept_id,course_id,fac_id)
+    context = {'institute':institute,'department': department, 'faculty': faculty, 'course': course, 'notes': notes,'showNoteModal':True,'showUpdateNoteModal':True,'showAddButton':True}
     return render(request, "lms/notes.html", context)
 

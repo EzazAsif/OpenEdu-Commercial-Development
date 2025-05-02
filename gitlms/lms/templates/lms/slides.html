@@ -16,7 +16,7 @@
         <i class="fas fa-slides fa-2x"></i>
       </div>
       <div
-        onclick="window.location.href='{% url 'show_pdf' department.id course.id faculty.id slide.id %}';"
+        onclick="window.location.href='{% url 'show_pdf' institute.id department.id course.id faculty.id slide.id %}';"
       >
         <h3 class="font-semibold text-lg text-gray-800">{{ slide.name }}</h3>
         <p class="text-sm text-gray-500">
@@ -76,7 +76,7 @@
           Update
         </button>
         <button
-          onclick="window.location.href='{% url 'delete_slide' department.id course.id faculty.id slide.id %}';"
+          onclick="window.location.href='{% url 'delete_slide' institute.id department.id course.id faculty.id slide.id %}';"
           class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 flex items-center"
         >
           <svg
@@ -104,7 +104,7 @@
 
   <!-- Back to Lectures Button -->
   <a
-    href="{% url 'fac_lecs' department.id course.id faculty.id %}"
+    href="{% url 'fac_lecs' institute.id department.id course.id faculty.id %}"
     class="mt-6 inline-block bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
   >
     ← Back to Lectures

@@ -12,7 +12,7 @@
     class="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow relative"
   >
     <div
-      onclick="window.location.href='{% url 'show_video' department.id course.id faculty.id video.id %}';"
+      onclick="window.location.href='{% url 'show_video' institute.id department.id course.id faculty.id video.id %}';"
     >
       <video class="w-full rounded" controls>
         <source src="{{ video.content.url }}" type="video/mp4" />
@@ -76,7 +76,7 @@
           Update
         </button>
         <button
-          onclick="window.location.href='{% url 'delete_video' department.id course.id faculty.id video.id %}';"
+          onclick="window.location.href='{% url 'delete_video' institute.id department.id course.id faculty.id video.id %}';"
           class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 flex items-center"
         >
           <svg
@@ -105,7 +105,7 @@
 
 <!-- Back to Lectures Button -->
 <a
-  href="{% url 'fac_lecs' department.id course.id faculty.id %}"
+  href="{% url 'fac_lecs' institute.id department.id course.id faculty.id %}"
   class="mt-6 inline-block bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
 >
   ← Back to Lectures
