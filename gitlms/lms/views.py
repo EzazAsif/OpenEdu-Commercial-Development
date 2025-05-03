@@ -15,7 +15,7 @@ def institutes(request):
     context={
         'institutes':institutes,
      
-        'institute':institutes[0]
+        
     }
 
     # Render the departments page with the context

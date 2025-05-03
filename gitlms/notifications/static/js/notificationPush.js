@@ -4,15 +4,15 @@ const notificationSocket = new WebSocket(
 );
 
 notificationSocket.onopen = function (e) {
-  console.log("WebSocket connection established");
+  console.log("Notification WebSocket connection established");
 };
 
 notificationSocket.onerror = function (e) {
-  console.error("WebSocket error:", e);
+  console.error(" Notification WebSocket error:", e);
 };
 
 notificationSocket.onclose = function (e) {
-  console.error("WebSocket closed unexpectedly", e);
+  console.error(" Notification WebSocket closed unexpectedly", e);
 };
 
 // When receiving a message from the WebSocket

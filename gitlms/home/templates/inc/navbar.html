@@ -38,13 +38,15 @@
         <a href="#}" class="block p-2 hover:bg-blue-700 rounded">Your Course</a>
       </li>
       {% endif %}
+      {% if institute %}
       <li class="mb-4">
         <a
-          href="{% url 'commChat' %}"
+          href="{% url 'commChat' institute.id %}"
           class="block p-2 hover:bg-blue-700 rounded"
           >Community Chat</a
         >
       </li>
+      {%endif%}
       <li class="mb-4">
         <a href="{% url 'conferance_home' %}" class="block p-2 hover:bg-blue-700 rounded">Conference</a>
       </li>
