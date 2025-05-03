@@ -4,5 +4,5 @@ from .views import *
 
 
 urlpatterns = [
-    path('', commChat, name='commChat'),
+    path('<int:ins_id>', commChat, name='commChat'),
 ]

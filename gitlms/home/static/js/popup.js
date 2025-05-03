@@ -7,24 +7,24 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 // Open a WebSocket connection
-const notificationSocket = new WebSocket(
+const PopupSocket = new WebSocket(
   "ws://" + window.location.hostname + ":8001/ws/notifications/"
 );
 
-notificationSocket.onopen = function (e) {
-  console.log("WebSocket connection established");
+PopupSocket.onopen = function (e) {
+  console.log("Popup WebSocket connection established");
 };
 
-notificationSocket.onerror = function (e) {
-  console.error("WebSocket error:", e);
+PopupSocket.onerror = function (e) {
+  console.error("Popup WebSocket error:", e);
 };
 
-notificationSocket.onclose = function (e) {
-  console.error("WebSocket closed unexpectedly", e);
+PopupSocket.onclose = function (e) {
+  console.error("Popup WebSocket closed unexpectedly", e);
 };
 
 // When receiving a message from the WebSocket
-notificationSocket.onmessage = function (e) {
+PopupSocket.onmessage = function (e) {
   try {
     console.log("Message event triggered!");
     const data = JSON.parse(e.data);
