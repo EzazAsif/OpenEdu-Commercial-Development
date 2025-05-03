@@ -1,5 +1,10 @@
 {% extends 'dashboard.html' %} {% block content %} {% load static %}
+<script>
+  requestUserRole = "{{ request.user.role }}";
+  userInstituteId = "{{ instituteId }}";
 
+  requestUserDepartment = "{{ request.user.department }}";
+</script>
 <div class="p-4 sm:p-6 flex-grow overflow-auto">
   <div class="space-y-4 sm:space-y-6">
     {% if admins and isMaster %}
@@ -24,7 +29,7 @@
         <p class="text-gray-600 text-sm sm:text-base">{{ user.role }}</p>
       </div>
       <button
-        onclick="showAppointModal('admin', '{{ user.id }}')"
+        onclick="showAppointModal('admin', '{{ user.id }}',userInstituteId)"
         class="bg-gray-200 hover:bg-gray-300 p-2 rounded-full focus:outline-none mt-4 sm:mt-0 sm:ml-4"
       >
         Assign Admin
@@ -54,7 +59,7 @@
         <p class="text-gray-600 text-sm sm:text-base">{{ user.role }}</p>
       </div>
       <button
-        onclick="showAppointModal('moderator', '{{ user.id }}')"
+        onclick="showAppointModal('moderator', '{{ user.id }}',userInstituteId)"
         class="bg-gray-200 hover:bg-gray-300 p-2 rounded-full focus:outline-none mt-4 sm:mt-0 sm:ml-4"
       >
         Assign Moderator
@@ -82,7 +87,7 @@
         <p class="text-gray-600 text-sm sm:text-base">{{ user.role }}</p>
       </div>
       <button
-        onclick="showAppointModal('moderator', '{{ user.id }}')"
+        onclick="showAppointModal('moderator', '{{ user.id }}',userInstituteId)"
         class="bg-gray-200 hover:bg-gray-300 p-2 rounded-full focus:outline-none mt-4 sm:mt-0 sm:ml-4"
       >
         Assign Moderator
@@ -95,11 +100,6 @@
 <!-- Appoint Modal -->
 {% include 'appoint_modals/appointModal.html' %}
 
-<script>
-  requestUserRole = "{{ request.user.role }}";
-  requestUserInstitute = {{ request.user.institute }};
-  requestUserDepartment = {{ request.user.department }};
-</script>
 <script src="{% static 'js/appointDropDown.js' %}"></script>
 
 {% endblock %}
