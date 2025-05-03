@@ -55,9 +55,14 @@ def appoint(request):
         
         except Department.DoesNotExist:
             pass
-    print("pp",admins,moderators,rusers)
+    
     isMaster=request.user.role=='master'
+    if(request.user.institute!=-1):
+        instituteId=request.user.institute
+    if(request.user.department!=-1):
+        instituteId=Department.objects.get(id=request.user.department).institute.id
     context = {
+        'instituteId':instituteId,
         'name': request.user.username,
         'rusers': rusers,
         'admins': admins,

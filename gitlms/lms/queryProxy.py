@@ -80,7 +80,7 @@ class QueryCacheProxy:
             print(departments)
         if not departments:
             print("Departments not cached yet")
-            departments = Department.objects.all().order_by('name')
+            departments = Department.objects.filter(institute=institute).order_by('name')
             cache.set(key, departments, timeout=60 * 15)
         return departments,institute
 

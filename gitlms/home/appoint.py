@@ -13,8 +13,9 @@ def get_institutes(request):
     
     return JsonResponse(list(institutes), safe=False)
 
-def get_departments(request):
-    departments = Department.objects.all().values('id', 'name')
+def get_departments_by_Institutes(request,ins_id):
+    institute = Institute.objects.get(id=ins_id)
+    departments = Department.objects.filter(institute=institute).values('id', 'name')
     
     return JsonResponse(list(departments), safe=False)
 
@@ -26,8 +27,7 @@ import json
 @csrf_exempt
 def appoint_user(request):
     # Check if the request is a POST
-    if (request.user.role!= 'master')and (request.user.role!= 'admin'):
-        return redirect('illegalactivity')
+    
     if request.method == 'POST':
         try:
             # Parse the incoming JSON data
@@ -36,10 +36,14 @@ def appoint_user(request):
             appoint_role = data.get('appoint_role')  # The role being assigned (admin, moderator, user)
             department_id = data.get('department_id')  # Department ID for Admins
             course_id = data.get('course_id')  # Course ID for Moderators
-            
+            institute_id=data.get('institute_id')
+            print( request.user.institute," ",institute_id)
+            if (request.user.institute!= int(institute_id))and (request.user.department!= int(department_id)):
+                print("Illegal")
+                return redirect('illegalactivity')
             # Retrieve the user object from the database
             user = User.objects.get(id=user_id)
-
+            print(user_id,appoint_role,department_id ,course_id,institute_id)
             # Handle role assignment
             if appoint_role == 'admin':
                 # Assign the user to a department for Admin role
