@@ -1,6 +1,6 @@
 // Open a WebSocket connection
 const CommChatSocket = new WebSocket(
-  `ws://${window.location.hostname}:8001/ws/commChat/`
+  "ws://" + window.location.hostname + `:8001/ws/commChat/${ins_id}`
 );
 
 CommChatSocket.onopen = function (e) {

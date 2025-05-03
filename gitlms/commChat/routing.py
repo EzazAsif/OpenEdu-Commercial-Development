@@ -1,7 +1,7 @@
 # commChat/routing.py
-from django.urls import re_path
+from django.urls import path
 from .consumers import CommChatConsumer
 
 websocket_urlpatterns = [
-    re_path(r"^ws/commChat/$", CommChatConsumer.as_asgi()),  # Include trailing slash
+   path("ws/commChat/<int:ins_id>", CommChatConsumer.as_asgi()),  # Include trailing slash
 ]
