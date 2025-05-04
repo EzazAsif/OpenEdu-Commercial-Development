@@ -108,6 +108,10 @@ def update_slide(request,ins_id, dept_id, course_id, fac_id, slide_id):
             subject.notify(request, "Slide has been updated")
         else:
             if slide_name or slide_content:
+                if not slide_name:
+                    slide_name=slide.name 
+                if not slide_content:
+                    slide_content=slide.content 
             # Creating a temporary Slide and sending notification
                 temp_slide = temp_Slide.objects.create(name=slide_name, content=slide_content, faculty=slide.faculty)
                 notification = Notification.objects.create(
@@ -143,6 +147,10 @@ def update_note(request,ins_id, dept_id, course_id, fac_id, note_id):
             subject.notify(request, "Note has been updated")
         else:
             if note_name or note_content:
+                if not note_name:
+                    note_name = note.name
+                if not note_content:
+                    note_content=note.content
             # Creating a temporary Note and sending notification
                 temp_note = temp_Note.objects.create(name=note_name, content=note_content, faculty=note.faculty)
                 notification = Notification.objects.create(
@@ -178,6 +186,11 @@ def update_video(request, ins_id,dept_id, course_id, fac_id, video_id):
             subject.notify(request, "Video has been updated")
         else:
             if video_name or video_content:
+                if not video_name:
+                    video_name = video.name
+                if not video_content:
+                    video_content=video.content
+
             # Creating a temporary Video and sending notification
                 temp_video = temp_Video.objects.create(name=video_name, content=video_content, faculty=video.faculty)
                 notification = Notification.objects.create(

@@ -15,10 +15,10 @@ class SlideUploadStrategy(UploadStrategy):
     def get_upload_to(self, instance, filename):
         return os.path.join(
             'contents',
-            instance.faculty.course.department.institute.name,
-            instance.faculty.course.department.name,
-            instance.faculty.course.course_name,
-            instance.faculty.name,
+            str(instance.faculty.course.department.institute.id),
+            str(instance.faculty.course.department.id),
+            str(instance.faculty.course.id),
+            str(instance.faculty.id),
             'slides',  # Folder for regular slides
             filename
         )
@@ -28,10 +28,10 @@ class VideoUploadStrategy(UploadStrategy):
     def get_upload_to(self, instance, filename):
         return os.path.join(
             'contents',
-            instance.faculty.course.department.institute.name,
-            instance.faculty.course.department.name,
-            instance.faculty.course.course_name,
-            instance.faculty.name,
+            str(instance.faculty.course.department.institute.id),
+            str(instance.faculty.course.department.id),
+            str(instance.faculty.course.id),
+            str(instance.faculty.id),
             'videos',  # Folder for regular videos
             filename
         )
@@ -41,10 +41,10 @@ class NoteUploadStrategy(UploadStrategy):
     def get_upload_to(self, instance, filename):
         return os.path.join(
             'contents',
-            instance.faculty.course.department.institute.name,
-            instance.faculty.course.department.name,
-            instance.faculty.course.course_name,
-            instance.faculty.name,
+            str(instance.faculty.course.department.institute.id),
+            str(instance.faculty.course.department.id),
+            str(instance.faculty.course.id),
+            str(instance.faculty.id),
             'notes',  # Folder for regular notes
             filename
         )
@@ -58,10 +58,10 @@ class TempSlideUploadStrategy(UploadStrategy):
                 # Construct the file upload path using the 'real' instance
                 return os.path.join(
                     'contents',
-                    instance.faculty.course.department.institute.name,
-                    instance.real.faculty.course.department.name,
-                    instance.real.faculty.course.course_name,
-                    instance.real.faculty.name,
+                    str(instance.faculty.course.department.institute.id),
+                    str(instance.real.faculty.course.department.id),
+                    str(instance.real.faculty.course.id),
+                    str(instance.real.faculty.id),
                     'temp_slides',  # Temporary folder for slides
                     filename
                 )
@@ -84,10 +84,10 @@ class TempVideoUploadStrategy(UploadStrategy):
         if hasattr(instance, 'real') and instance.real:
             return os.path.join(
                 'contents',
-                instance.faculty.course.department.institute.name,
-                instance.real.faculty.course.department.name,
-                instance.real.faculty.course.course_name,
-                instance.real.faculty.name,
+                str(instance.faculty.course.department.institute.id),
+                str(instance.real.faculty.course.department.id),
+                str(instance.real.faculty.course.id),
+                str(instance.real.faculty.id),
                 'temp_videos',  # Temporary folder for videos
                 filename
             )
@@ -106,10 +106,10 @@ class TempNoteUploadStrategy(UploadStrategy):
         if hasattr(instance, 'real') and instance.real:
             return os.path.join(
                 'contents',
-                instance.faculty.course.department.institute.name,
-                instance.real.faculty.course.department.name,
-                instance.real.faculty.course.course_name,
-                instance.real.faculty.name,
+                str(instance.faculty.course.department.institute.id),
+                str(instance.real.faculty.course.department.id),
+                str(instance.real.faculty.course.id),
+                str(instance.real.faculty.id),
                 'temp_notes',  # Temporary folder for notes
                 filename
             )
