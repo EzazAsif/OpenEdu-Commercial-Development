@@ -1,7 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from .imageResizer import ImageResizeMixin
 
-class User(AbstractUser):
+
+class User(ImageResizeMixin,AbstractUser):
     contact = models.CharField(max_length=15, blank=True, null=True)
     profilepicture = models.ImageField(upload_to='images/profilepictures', blank=True, null=True,default='images/profilepictures/rafid1.jpg')
     role=models.TextField(default='user')
