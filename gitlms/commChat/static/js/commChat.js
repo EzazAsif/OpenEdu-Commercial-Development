@@ -25,10 +25,15 @@ function sendMessage(event) {
   if (!message) return; // Do not send empty messages
 
   console.log("Message:", message);
-
+  CurrentUser = {
+    id: currentUserId,
+    name: currentUserName,
+    profilepicture: currentUserAvatar,
+  };
   // Construct the payload
   const payload = {
     type: "chat_message",
+    sender: CurrentUser,
     message: message,
     timestamp: new Date().toISOString(),
   };

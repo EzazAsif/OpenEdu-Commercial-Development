@@ -13,22 +13,7 @@
 </div>
   <!-- Chat Messages (Scrollable area) -->
   <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2">
-    {% include 'commChatComponents/senderText.html' %}
-    {% include 'commChatComponents/recieverText.html' %}
-    {% include 'commChatComponents/senderText.html' %}
-    {% include 'commChatComponents/recieverText.html' %}
-    {% include 'commChatComponents/senderText.html' %}
-    {% include 'commChatComponents/recieverText.html' %}
-    {% include 'commChatComponents/senderText.html' %}
-    {% include 'commChatComponents/recieverText.html' %}
-    {% include 'commChatComponents/senderText.html' %}
-    {% include 'commChatComponents/recieverText.html' %}
-    {% include 'commChatComponents/senderText.html' %}
-    {% include 'commChatComponents/recieverText.html' %}
-    {% include 'commChatComponents/senderText.html' %}
-    {% include 'commChatComponents/recieverText.html' %}
-    {% include 'commChatComponents/senderText.html' %}
-    {% include 'commChatComponents/recieverText.html' %}
+ 
   </div>
 
   <!-- Input Form (Sticky at bottom) -->
@@ -38,7 +23,12 @@
 
 </div>
 <script >
-  const ins_id={{institute.id}}
+  const ins_id={{institute.id}};
+    const currentUserId = "{{ request.user.id }}"; // Expose Django user ID to JS
+    const currentUserName = "{{ request.user.get_full_name }}";
+    const currentUserAvatar = "{{ request.user.profilepicture.url }}";
+  
+  
 </script>
 <script src="{% static "js/chatPush.js" %}"></script>
 <script src="{% static "js/commChat.js" %}"></script>
