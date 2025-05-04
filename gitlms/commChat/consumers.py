@@ -1,5 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.core.cache import cache
 import json
+import uuid
 
 class CommChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -20,12 +22,23 @@ class CommChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-    # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json.get('message', '')
         sender = text_data_json.get('sender', '')
         timestamp = text_data_json.get('timestamp', '')
+
+        # ✅ Cache each message with its own expiry
+        unique_id = uuid.uuid4().hex
+        message_key = f"{self.group_name}:{unique_id}"  # e.g., chat_123:abc123
+
+        cache.set(message_key, text_data, timeout=3600)  # 1 hour expiry
+
+        # ✅ Maintain an index of all message keys for the group
+        index_key = f"{self.group_name}:index"
+        existing_keys = cache.get(index_key, [])
+        existing_keys.append(message_key)
+        cache.set(index_key, existing_keys, timeout=3600)
 
         # Broadcast message to group
         await self.channel_layer.group_send(
@@ -38,10 +51,8 @@ class CommChatConsumer(AsyncWebsocketConsumer):
             }
         )
 
-    # Receive message from group
     async def chat_message(self, event):
-        # Send full data to WebSocket
-        print( event)
+        print("Group message event:", event)
         await self.send(text_data=json.dumps({
             'message': event['message'],
             'sender': event['sender'],

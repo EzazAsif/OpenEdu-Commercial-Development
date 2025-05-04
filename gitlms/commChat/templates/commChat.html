@@ -8,12 +8,18 @@
 <div class="chatbox-container bg-white shadow-2xl w-full h-[calc(100vh-100px)] flex flex-col">
 
   <!-- Chat Header (Fixed at top of chat box) -->
-  <div class="sticky bg-white border-t z-15" style="top:7.55%">
+  <div class="sticky bg-white border-t z-20" style="top:7.55%">
   {% include 'commChatComponents/chatHeader.html' %}
 </div>
   <!-- Chat Messages (Scrollable area) -->
   <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2">
- 
+             {%for chatmessage in chatMessages %}
+             {%if chatmessage.sender.id != request.user.id %}
+             {%include 'commChatComponents/senderText.html' %}
+             {% else %}
+             {%include 'commChatComponents/recieverText.html' %}
+             {%endif%}
+             {%endfor%}
   </div>
 
   <!-- Input Form (Sticky at bottom) -->

@@ -1,7 +1,7 @@
-<div class="flex items-start relative m-9">
+<div class="flex items-start relative m-9 z-10">
   <div class="relative">
     <img
-      src="https://i.pravatar.cc/150?img=3"
+      src="{{chatmessage.sender.profilepicture}}"
       alt="Sender Avatar"
       class="h-12 w-12 rounded-full border-2 border-blue-500 cursor-pointer sender-avatar"
       onclick="toggleOptions('options-1')"
@@ -17,11 +17,13 @@
   </div>
   <div class="ml-4 flex flex-col">
     <div class="flex items-center space-x-2">
-      <span class="text-lg font-semibold text-gray-800">John Doe</span>
-      <span class="text-xs text-gray-400">10:30 AM</span>
+      <span class="text-lg font-semibold text-gray-800"
+        >{{chatmessage.sender.name}}</span
+      >
+      <span class="text-xs text-gray-400">{{chatmessage.timestamp}}</span>
     </div>
     <p class="text-sm text-gray-600 mt-1 leading-relaxed">
-      Hello, how are you? I hope everything is going well!
+      {{chatmessage.message}}
     </p>
   </div>
 </div>
