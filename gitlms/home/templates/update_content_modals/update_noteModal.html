@@ -70,3 +70,21 @@
     </form>
   </div>
 </div>
+<script>
+  document
+    .getElementById("updateNoteForm")
+    .addEventListener("submit", function (event) {
+      var fileInput = document.getElementById("noteContent");
+      var filePath = fileInput.value;
+      var allowedExtensions =
+        /(\.pdf|\.docx|\.pptx|\.txt|\.xls|\.xlsx|\.ppt|\.odt)$/i;
+
+      // Check if the uploaded file matches the allowed extensions
+      if (!allowedExtensions.exec(filePath)) {
+        alert(
+          "Invalid file type. Please upload a PDF, DOCX, PPTX, TXT, XLS, XLSX, PPT, or ODT file."
+        );
+        event.preventDefault(); // Prevent form submission
+      }
+    });
+</script>

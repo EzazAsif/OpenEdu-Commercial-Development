@@ -70,3 +70,19 @@
     </form>
   </div>
 </div>
+<script>
+  document
+    .getElementById("updateVideoForm")
+    .addEventListener("submit", function (event) {
+      var fileInput = document.getElementById("videoContent");
+      var filePath = fileInput.value;
+      var allowedExtensions = /(\.mp4|\.mov|\.avi|\.mkv|\.webm|\.flv|\.wmv)$/i;
+
+      // Check if the uploaded file matches the allowed extensions
+      if (!allowedExtensions.exec(filePath)) {
+        alert(
+          "Invalid file type. Please upload a video in MP4, MOV, AVI, MKV, WEBM, FLV, or WMV format."
+        );
+        event.preventDefault(); // Prevent form submission
+      }
+    });
