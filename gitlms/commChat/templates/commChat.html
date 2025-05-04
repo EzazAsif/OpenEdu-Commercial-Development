@@ -8,7 +8,7 @@
 <div class="chatbox-container bg-white shadow-2xl w-full h-[calc(100vh-100px)] flex flex-col">
 
   <!-- Chat Header (Fixed at top of chat box) -->
-  <div class="sticky bg-white border-t z-20" style="top:7.55%">
+  <div class="sticky bg-white border-t z-15" style="top:7.55%">
   {% include 'commChatComponents/chatHeader.html' %}
 </div>
   <!-- Chat Messages (Scrollable area) -->
@@ -40,6 +40,7 @@
 <script >
   const ins_id={{institute.id}}
 </script>
-<script src="{% static "js/commChat.js" %}"></script>
 <script src="{% static "js/chatPush.js" %}"></script>
+<script src="{% static "js/commChat.js" %}"></script>
+
 {% endblock %}

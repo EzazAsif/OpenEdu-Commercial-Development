@@ -9,13 +9,6 @@ function scrollChatToBottom() {
 // Scroll on page load
 window.addEventListener("load", scrollChatToBottom);
 
-// Optional: scroll after new message is sent
-function sendMessage(event) {
-  event.preventDefault();
-  // your logic to send message
-  setTimeout(scrollChatToBottom, 100); // wait for DOM update
-}
-
 // Toggle options menu for sender
 function toggleOptions(id) {
   const menu = document.getElementById(id);
@@ -25,11 +18,29 @@ function toggleOptions(id) {
 // Prevent form submission and handle sending message with attachment
 function sendMessage(event) {
   event.preventDefault();
+
   const messageInput = event.target.querySelector('input[type="text"]');
-  const message = messageInput.value;
+  const message = messageInput.value.trim();
+
+  if (!message) return; // Do not send empty messages
 
   console.log("Message:", message);
 
-  // Reset the input fields
+  // Construct the payload
+  const payload = {
+    type: "chat_message",
+    message: message,
+    timestamp: new Date().toISOString(),
+  };
+
+  // Send message to the WebSocket
+  if (CommChatSocket.readyState === WebSocket.OPEN) {
+    CommChatSocket.send(JSON.stringify(payload));
+  } else {
+    console.error("WebSocket is not open. Message not sent.");
+  }
+
+  // Reset the input field
   messageInput.value = "";
+  setTimeout(scrollChatToBottom, 100); // wait for DOM update
 }
