@@ -1,180 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <!-- Add Django template tags for CSRF -->
     {% load static %}
-</head>
-<body class="bg-gradient-to-r from-gray-200 to-indigo-200 screen flex items-center justify-center p-3">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-2xl shadow-black overflow-hidden">
-        <!-- Header -->
-        <div class="p-6 text-center">
-            <h1 class="text-2xl font-bold text-black">Edit Profile</h1>
-            <!-- Django messages -->
-            {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} p-2 mb-2 rounded text-sm {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
+  </head>
+  <body
+    class="bg-gradient-to-r from-gray-200 to-indigo-200 screen flex items-center justify-center p-3"
+  >
+    <div
+      class="w-full max-w-md bg-white rounded-xl shadow-2xl shadow-black overflow-hidden"
+    >
+      <!-- Header -->
+      <div class="p-6 text-center">
+        <h1 class="text-2xl font-bold text-black">Edit Profile</h1>
+        <!-- Django messages -->
+        {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+          <div
+            class="alert alert-{{ message.tags }} p-2 mb-2 rounded text-sm {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}"
+          >
+            {{ message }}
+          </div>
+          {% endfor %}
         </div>
-        
-        <!-- Profile Form -->
-        <form id="profileForm" method="POST" enctype="multipart/form-data" class="p-6 space-y-4" action="{% url 'editprofile' %}">
-            {% csrf_token %}
-            
-            <!-- Profile Picture -->
-            <div class="flex justify-center">
-                <div class="relative">
-                    <img id="profileImage" src="{{ request.user.profilepicture.url }}" alt="Profile" 
-                         class="w-24 h-24 rounded-full border-4 border-white shadow-lg">
-                    <button type="button" id="changePhotoBtn" class="absolute bottom-0 right-0 bg-indigo-400 text-white rounded-full p-2 hover:bg-indigo-500 transition">
-                        <i class="fas fa-camera"></i>
-                    </button>
-                    <input type="file" id="editpp" name="editpp" class="hidden">
-                </div>
-            </div>
-            
-            <!-- First Name -->
-            <div>
-                <label for="FirstName" class="block text-gray-700 text-sm font-bold mb-1">First Name</label>
-                <input type="text" id="FirstName" name="FirstName" 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       value="{{ request.user.first_name }}" required>
-            </div>
-            
-            <!-- Last Name -->
-            <div>
-                <label for="LastName" class="block text-gray-700 text-sm font-bold mb-1">Last Name</label>
-                <input type="text" id="LastName" name="LastName" 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       value="{{ request.user.last_name }}" required>
-            </div>
-            
-            <!-- Email -->
-            <div>
-                <label for="email" class="block text-gray-700 text-sm font-bold mb-1">Email</label>
-                <input type="email" id="email" name="email" 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       value="{{ request.user.email }}" required>
-            </div>
-            
-            <!-- Password -->
-            <div>
-                <label for="psw" class="block text-gray-700 text-sm font-bold mb-1">New Password</label>
-                <div class="relative">
-                    <input type="password" id="psw" name="psw" 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Leave blank to keep current">
-                    <button type="button" id="togglePassword" class="absolute right-3 top-2 text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Confirm Password -->
-            <div>
-                <label for="psw-repeat" class="block text-gray-700 text-sm font-bold mb-1">Confirm New Password</label>
-                <div class="relative">
-                    <input type="password" id="psw-repeat" name="psw-repeat" 
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Leave blank to keep current">
-                    <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-2 text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-                <p id="passwordError" class="text-red-500 text-xs italic hidden">Passwords don't match!</p>
-            </div>
-            
-            <!-- Form Actions -->
-            <div class="pt-4 flex justify-between">
-                <a href="{% url 'viewprofile' %}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition">
-                    Cancel
-                </a>
-                <button type="submit" id="saveBtn" class="bg-indigo-400 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded transition">
-                    Save Changes
-                </button>
-            </div>
-        </form>
+        {% endif %}
+      </div>
+
+      <!-- Profile Form -->
+      <form
+        id="profileForm"
+        method="POST"
+        enctype="multipart/form-data"
+        class="p-6 space-y-4"
+        action="{% url 'editprofile' %}"
+      >
+        {% csrf_token %}
+
+        <!-- Profile Picture -->
+        <div class="flex justify-center">
+          <div class="relative">
+            <img
+              id="profileImage"
+              src="{{ request.user.profilepicture.url }}"
+              alt="Profile"
+              class="w-24 h-24 rounded-full border-4 border-white shadow-lg"
+            />
+            <button
+              type="button"
+              id="changePhotoBtn"
+              class="absolute bottom-0 right-0 bg-indigo-400 text-white rounded-full p-2 hover:bg-indigo-500 transition"
+            >
+              <i class="fas fa-camera"></i>
+            </button>
+            <input
+              type="file"
+              id="editpp"
+              name="editpp"
+              accept="image/*"
+              class="hidden"
+            />
+          </div>
+        </div>
+
+        <!-- First Name -->
+        <div>
+          <label
+            for="FirstName"
+            class="block text-gray-700 text-sm font-bold mb-1"
+            >First Name</label
+          >
+          <input
+            type="text"
+            id="FirstName"
+            name="FirstName"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value="{{ request.user.first_name }}"
+            required
+          />
+        </div>
+
+        <!-- Last Name -->
+        <div>
+          <label
+            for="LastName"
+            class="block text-gray-700 text-sm font-bold mb-1"
+            >Last Name</label
+          >
+          <input
+            type="text"
+            id="LastName"
+            name="LastName"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value="{{ request.user.last_name }}"
+            required
+          />
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label for="email" class="block text-gray-700 text-sm font-bold mb-1"
+            >Email</label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value="{{ request.user.email }}"
+            required
+          />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="psw" class="block text-gray-700 text-sm font-bold mb-1"
+            >New Password</label
+          >
+          <div class="relative">
+            <input
+              type="password"
+              id="psw"
+              name="psw"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Leave blank to keep current"
+            />
+            <button
+              type="button"
+              id="togglePassword"
+              class="absolute right-3 top-2 text-gray-500 hover:text-gray-700"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          <label
+            for="psw-repeat"
+            class="block text-gray-700 text-sm font-bold mb-1"
+            >Confirm New Password</label
+          >
+          <div class="relative">
+            <input
+              type="password"
+              id="psw-repeat"
+              name="psw-repeat"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Leave blank to keep current"
+            />
+            <button
+              type="button"
+              id="toggleConfirmPassword"
+              class="absolute right-3 top-2 text-gray-500 hover:text-gray-700"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <p id="passwordError" class="text-red-500 text-xs italic hidden">
+            Passwords don't match!
+          </p>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="pt-4 flex justify-between">
+          <a
+            href="{% url 'viewprofile' %}"
+            class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition"
+          >
+            Cancel
+          </a>
+          <button
+            type="submit"
+            id="saveBtn"
+            class="bg-indigo-400 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded transition"
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const profileForm = document.getElementById('profileForm');
-            const changePhotoBtn = document.getElementById('changePhotoBtn');
-            const profileImage = document.getElementById('profileImage');
-            const editppInput = document.getElementById('editpp');
-            const togglePassword = document.getElementById('togglePassword');
-            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-            const passwordInput = document.getElementById('psw');
-            const confirmPasswordInput = document.getElementById('psw-repeat');
-            const passwordError = document.getElementById('passwordError');
-            
-            // Toggle password visibility
-            function togglePasswordVisibility(input, button) {
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
-                button.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-            }
-            
-            // Change profile picture
-            changePhotoBtn.addEventListener('click', function() {
-                editppInput.click();
-            });
-            
-            // Preview selected image
-            editppInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        profileImage.src = event.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-            
-            // Toggle password visibility
-            togglePassword.addEventListener('click', function() {
-                togglePasswordVisibility(passwordInput, togglePassword);
-            });
-            
-            toggleConfirmPassword.addEventListener('click', function() {
-                togglePasswordVisibility(confirmPasswordInput, toggleConfirmPassword);
-            });
-            
-            // Validate password match
-            function validatePassword() {
-                if (passwordInput.value && passwordInput.value !== confirmPasswordInput.value) {
-                    passwordError.classList.remove('hidden');
-                    return false;
-                } else {
-                    passwordError.classList.add('hidden');
-                    return true;
-                }
-            }
-            
-            passwordInput.addEventListener('input', validatePassword);
-            confirmPasswordInput.addEventListener('input', validatePassword);
-            
-            // Form submission
-            profileForm.addEventListener('submit', function(e) {
-                if (!validatePassword()) {
-                    e.preventDefault();
-                    return;
-                }
-                
-                // Additional validation can be added here if needed
-            });
+      document.addEventListener("DOMContentLoaded", function () {
+        // DOM Elements
+        const profileForm = document.getElementById("profileForm");
+        const changePhotoBtn = document.getElementById("changePhotoBtn");
+        const profileImage = document.getElementById("profileImage");
+        const editppInput = document.getElementById("editpp");
+        const togglePassword = document.getElementById("togglePassword");
+        const toggleConfirmPassword = document.getElementById(
+          "toggleConfirmPassword"
+        );
+        const passwordInput = document.getElementById("psw");
+        const confirmPasswordInput = document.getElementById("psw-repeat");
+        const passwordError = document.getElementById("passwordError");
+
+        // Toggle password visibility
+        function togglePasswordVisibility(input, button) {
+          const type =
+            input.getAttribute("type") === "password" ? "text" : "password";
+          input.setAttribute("type", type);
+          button.innerHTML =
+            type === "password"
+              ? '<i class="fas fa-eye"></i>'
+              : '<i class="fas fa-eye-slash"></i>';
+        }
+
+        // Change profile picture
+        changePhotoBtn.addEventListener("click", function () {
+          editppInput.click();
         });
+
+        // Preview selected image
+        editppInput.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+              profileImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        // Toggle password visibility
+        togglePassword.addEventListener("click", function () {
+          togglePasswordVisibility(passwordInput, togglePassword);
+        });
+
+        toggleConfirmPassword.addEventListener("click", function () {
+          togglePasswordVisibility(confirmPasswordInput, toggleConfirmPassword);
+        });
+
+        // Validate password match
+        function validatePassword() {
+          if (
+            passwordInput.value &&
+            passwordInput.value !== confirmPasswordInput.value
+          ) {
+            passwordError.classList.remove("hidden");
+            return false;
+          } else {
+            passwordError.classList.add("hidden");
+            return true;
+          }
+        }
+
+        passwordInput.addEventListener("input", validatePassword);
+        confirmPasswordInput.addEventListener("input", validatePassword);
+
+        // Form submission
+        profileForm.addEventListener("submit", function (e) {
+          if (!validatePassword()) {
+            e.preventDefault();
+            return;
+          }
+
+          // Additional validation can be added here if needed
+        });
+      });
     </script>
-</body>
+  </body>
 </html>
