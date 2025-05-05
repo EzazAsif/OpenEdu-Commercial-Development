@@ -61,9 +61,9 @@ def deptcourses(request,ins_id,id):
     course_proxy = QueryCacheProxy(request.user)
     
     courses,department,institute = course_proxy.get_deptCourses(ins_id,id)  # Fetch departments via the pr
-    showAddButton=(request.user.role=='master')or(request.user.department==department.id)
-    showUpdateCourseModal=(request.user.role=='master')or(request.user.department==department.id)
-    showCourseModal=(request.user.role=='master')or(request.user.department==department.id)
+    showAddButton=(request.user.institute==ins_id)or(request.user.department==department.id)
+    showUpdateCourseModal=(request.user.institute==ins_id)or(request.user.department==department.id)
+    showCourseModal=(request.user.institute==ins_id)or(request.user.department==department.id)
     context={'name':request.user.username,'courses':courses , 'department': department,'institute':institute,
              'showCourseModal':showCourseModal,'showUpdateCourseModal':showUpdateCourseModal,'showAddButton':showAddButton}
     return render(request,'lms/deptcourses.html',context)
@@ -76,9 +76,9 @@ def deptcourses(request,ins_id,id):
 def course_facs(request, ins_id,dept_id, course_id):
     faculty_proxy = QueryCacheProxy(request.user)
     faculties,course,department,institute = faculty_proxy.get_courseFacs(ins_id,dept_id,course_id)
-    showFacultyModal=(request.user.role=='master')or(request.user.department==department.id)or(request.user.course==course.id)
-    showUpdateFacultyModal=(request.user.role=='master')or(request.user.department==department.id)or(request.user.course==course.id)
-    showAddButton=(request.user.role=='master')or(request.user.department==department.id)or(request.user.course==course.id)
+    showFacultyModal=(request.user.institute==ins_id)or(request.user.department==department.id)or(request.user.course==course.id)
+    showUpdateFacultyModal=(request.user.institute==ins_id)or(request.user.department==department.id)or(request.user.course==course.id)
+    showAddButton=(request.user.institute==ins_id)or(request.user.department==department.id)or(request.user.course==course.id)
     context = {'institute':institute,'department': department, 'faculties': faculties,'course':course,
                'showFacultyModal':showFacultyModal,'showUpdateFacultyModal':showUpdateFacultyModal,'showAddButton':showAddButton}
     return render(request, 'lms/faculty.html', context)
