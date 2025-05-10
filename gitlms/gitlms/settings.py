@@ -178,6 +178,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://openedu.innovativecollections.com',
     'https://www.openedu.innovativecollections.com',
     'http://www.openedu.innovativecollections.com',
+    'https://127.0.0.1',
 ]
 
 
