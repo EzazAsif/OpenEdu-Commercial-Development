@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts','home','errors','lms', 'notifications','commChat','videomeet',
+    'accounts','home','errors','lms', 'notifications','commChat','videomeet', 'django_elasticsearch_dsl',
 ]
 
 MIDDLEWARE = [
@@ -185,3 +185,12 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 X_FRAME_OPTIONS = 'ALLOWALL'
+
+# settings.py
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'  # Use your ES host or Docker IP if needed
+    },
+}
+

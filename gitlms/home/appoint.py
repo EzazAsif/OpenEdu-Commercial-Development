@@ -2,6 +2,10 @@ from django.http import JsonResponse
 from lms.models import Department, Course,Institute
 from accounts.models import User
 from django.shortcuts import redirect
+from django.http import JsonResponse
+from elasticsearch_dsl import Q
+from accounts.documents import UserDocument
+from accounts.serializers import UserSerializer
 
 def get_courses_by_department(request, department_id):
     department = Department.objects.get(id=department_id)
@@ -84,3 +88,16 @@ def appoint_user(request):
     
     # If the request is not a POST
     return JsonResponse({"status": "error", "message": "Invalid request method."})
+
+
+
+def getUsers(request, string):
+    q = Q("multi_match", query=string, fields=["username", "email"], fuzziness="auto")
+    search_results = UserDocument.search().query(q)[:20]
+
+    # Get matching DB objects using their IDs
+    user_ids = [hit.meta.id for hit in search_results]
+    users = User.objects.filter(id__in=user_ids)
+
+    serialized = UserSerializer(users, many=True)
+    return JsonResponse(serialized.data, safe=False)

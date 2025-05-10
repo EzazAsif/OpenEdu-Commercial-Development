@@ -13,7 +13,8 @@ pages=[path('', home, name='home'),
 functionalities=[ path('appoint_user/', appoint_user, name='appoint_user'),
                   path('get_courses_by_department/<int:department_id>/', get_courses_by_department, name='get_courses_by_department'),
                   path('get_departments/<int:ins_id>', get_departments_by_Institutes, name='get_departments'),
-                  path('get_institutes/', get_institutes, name='get_institutes')
+                  path('get_institutes/', get_institutes, name='get_institutes'),
+                  path('get_users/',getUsers,name='get_users')
                  ]
 
 urlpatterns+=pages
