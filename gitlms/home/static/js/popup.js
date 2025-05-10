@@ -8,7 +8,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
 // Open a WebSocket connection
 const PopupSocket = new WebSocket(
-  "ws://" + window.location.hostname + ":8001/ws/notifications/"
+  "wss://" + window.location.hostname + ":443/ws/notifications/"
 );
 
 PopupSocket.onopen = function (e) {

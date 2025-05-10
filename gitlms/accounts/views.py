@@ -73,7 +73,7 @@ def signup(request):
 @login_required
 @log_activity  # Apply the decorator to log activity for profile editing
 def edit_profile(request):
-    user = request.user.id
+    user = request.user
     if request.method == "POST":
         data = request.POST
         Firstname = data.get('FirstName')

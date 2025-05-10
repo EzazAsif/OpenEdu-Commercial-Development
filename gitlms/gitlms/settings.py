@@ -106,7 +106,7 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+        'LOCATION': f"redis://{os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1')}:6379/1",
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -174,8 +174,10 @@ AUTH_USER_MODEL = 'accounts.User'
 
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://8ac2-103-58-73-180.ngrok-free.app',
-    'https://8ac2-103-58-73-180.ngrok-free.app',
+    'https://openedu.innovativecollections.com',
+    'http://openedu.innovativecollections.com',
+    'https://www.openedu.innovativecollections.com',
+    'http://www.openedu.innovativecollections.com',
 ]
 
 
