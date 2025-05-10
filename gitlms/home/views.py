@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.models import User
 from lms.models import Institute,Department,Course
 from lms.queryProxy import QueryCacheProxy
+from django.core.cache import cache
 
 def home(request):
     if request.user.is_authenticated:
@@ -22,6 +23,7 @@ def students(request):
 
 @login_required
 def appoint(request):
+    cache_key = 'regular_users'
     proxy = QueryCacheProxy(request.user)
 
     if request.user.role not in ['admin', 'master']:
@@ -40,7 +42,13 @@ def appoint(request):
 
             admins = User.objects.filter(department__in=department_ids)
             moderators = User.objects.filter(course__in=course_ids)
-            rusers = User.objects.filter(role='user')
+            rusers = cache.get(cache_key)
+            if rusers is None:
+                print("No cache")
+                rusers = list(User.objects.filter(role='user'))  # Convert to list before caching
+                cache.set(cache_key, rusers, timeout=60*15)  # Cache for 15 minutes
+            else:
+                print("using cache")
         
         except Institute.DoesNotExist:
             pass
@@ -51,7 +59,14 @@ def appoint(request):
             course_ids = Course.objects.filter(department=department).values_list('id', flat=True)
 
             moderators = User.objects.filter(course__in=course_ids)
-            rusers = User.objects.filter(role='user')
+            rusers = cache.get(cache_key)
+
+            if rusers is None:
+                print("No cache")
+                rusers = list(User.objects.filter(role='user'))  # Convert to list before caching
+                cache.set(cache_key, rusers, timeout=60*15)  # Cache for 15 minutes
+            else:
+                print("using cache")
         
         except Department.DoesNotExist:
             pass
