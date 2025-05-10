@@ -1,6 +1,6 @@
 // Open a WebSocket connection
 const notificationSocket = new WebSocket(
-  "ws://" + window.location.hostname + ":8001/ws/notifications/"
+  "wss://" + window.location.hostname + ":443/ws/notifications/"
 );
 
 notificationSocket.onopen = function (e) {
