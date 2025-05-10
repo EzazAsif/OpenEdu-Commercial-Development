@@ -188,9 +188,11 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 
 # settings.py
 
+import os
+
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'localhost:9200'  # Use your ES host or Docker IP if needed
-    },
+        'hosts': os.getenv('ELASTICSEARCH_DSL_HOST', 'http://localhost:9200')
+    }
 }
 
