@@ -91,13 +91,20 @@ def appoint_user(request):
 
 
 
-def getUsers(request, string):
-    q = Q("multi_match", query=string, fields=["username", "email"], fuzziness="auto")
-    search_results = UserDocument.search().query(q)[:20]
 
-    # Get matching DB objects using their IDs
+
+def getUsers(request, string):
+    q = Q(
+        "bool",
+        should=[
+            Q("match_phrase_prefix", first_name=string),
+            Q("match_phrase_prefix", last_name=string),
+            Q("match_phrase_prefix", email=string),
+        ],
+        minimum_should_match=1
+    )
+    search_results = UserDocument.search().query(q)[:20]
     user_ids = [hit.meta.id for hit in search_results]
     users = User.objects.filter(id__in=user_ids)
-
     serialized = UserSerializer(users, many=True)
     return JsonResponse(serialized.data, safe=False)

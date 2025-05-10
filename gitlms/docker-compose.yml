@@ -27,6 +27,7 @@ services:
     command: certonly --webroot --webroot-path=/var/www/certbot --email asifrafid8399@gmail.com --agree-tos --no-eff-email -d openedu.innovativecollections.com
 
   django:
+    container_name: django
     build: .
     command: gunicorn gitlms.wsgi:application --bind 0.0.0.0:8000
     volumes:
@@ -38,6 +39,7 @@ services:
     depends_on:
       - redis
       - db
+      - elasticsearch
     environment:
       - DJANGO_SETTINGS_MODULE=gitlms.settings
       - REDIS_URL=redis://redis:6379/1
@@ -48,10 +50,12 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DB_HOST=db
       - DB_PORT=5432
+      - ELASTICSEARCH_DSL_HOST=http://elasticsearch:9200
     networks:
       - app-network
 
   daphne:
+    container_name: daphne # ✅ Matches upstream daphne in nginx.conf
     build: .
     command: daphne --proxy-headers -b 0.0.0.0 -p 8001 gitlms.asgi:application
     volumes:
@@ -95,11 +99,30 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app-network
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false # disable security for dev
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
   static_volume:
   media_volume:
+  esdata:
 
 networks:
   app-network:
