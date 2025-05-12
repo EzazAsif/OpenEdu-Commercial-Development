@@ -29,4 +29,4 @@ jobs:
             docker-compose up -d
             docker-compose exec  django python manage.py migrate
             docker-compose exec  django python manage.py collectstatic --noinput
-            docker-compose exec  django python manage.py rebuild_index -f
+            docker-compose exec  django python manage.py search_index --rebuild -f
