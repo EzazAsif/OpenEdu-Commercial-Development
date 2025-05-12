@@ -1,20 +1,11 @@
-<<<<<<< HEAD
-=======
 # .gitignore
 # Ignore live cert symlinks and sensitive keys
 gitlms/certbot/conf/live/
 gitlms/certbot/conf/archive/
 gitlms/certbot/conf/renewal/
->>>>>>> 843b22998e858b7cd5c6dc900d2f5216be309a06
+
 # Ignore compiled Python files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-<<<<<<< HEAD
-# Ignore certbot certificate files
-
-
-=======
->>>>>>> 843b22998e858b7cd5c6dc900d2f5216be309a06
-
