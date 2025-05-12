@@ -1,0 +1,32 @@
+name: Deploy to VPS via SSH
+
+on:
+  push:
+    branches:
+      - main # or your desired branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✅ Checkout Code
+        uses: actions/checkout@v3
+
+      - name: 📂 Deploy via SSH to VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          port: 22
+          script: |
+            cd ~/OpenEdu-Commercial-Development
+            git pull origin main
+            cd gitlms
+            docker-compose down
+            docker-compose build
+            docker-compose up -d
+            docker-compose exec -T gitlms python manage.py migrate
+            docker-compose exec -T gitlms python manage.py collectstatic --noinput
+            docker-compose exec -T gitlms python manage.py rebuild_index -f
