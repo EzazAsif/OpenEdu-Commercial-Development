@@ -43,4 +43,6 @@ class UserDocument(Document):
 
     class Django:
         model = User
-        fields = ['id']  # Keep only what's needed
+        fields = ['id', 'role', 'profilepicture']
+
+

@@ -93,6 +93,7 @@ def appoint_user(request):
 
 
 
+
 def getUsers(request, string):
     q = Q(
         "bool",
@@ -104,7 +105,12 @@ def getUsers(request, string):
         minimum_should_match=1
     )
     search_results = UserDocument.search().query(q)[:20]
-    user_ids = [hit.meta.id for hit in search_results]
-    users = User.objects.filter(id__in=user_ids)
-    serialized = UserSerializer(users, many=True)
-    return JsonResponse(serialized.data, safe=False)
+
+    # Extract indexed fields directly
+    users = []
+    for hit in search_results:
+        data = hit.to_dict()
+        data["id"] = hit.meta.id  # Ensure ID is included
+        users.append(data)
+
+    return JsonResponse(users, safe=False)
