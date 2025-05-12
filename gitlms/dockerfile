@@ -8,24 +8,24 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
-    curl \                    # ✅ Needed for wait script (you missed this before)
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# ✅ Copy all project files into the container
+# ✅ Copy all source files into the container
 COPY . /app/
 
-# ✅ Copy and make the wait script executable
-COPY wait-for-elasticsearch.sh /app/wait-for-elasticsearch.sh
+# ✅ Copy the wait script explicitly from scripts/
+COPY scripts/wait-for-elasticsearch.sh /app/wait-for-elasticsearch.sh
 RUN chmod +x /app/wait-for-elasticsearch.sh
 
 # ✅ Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ✅ Expose necessary ports (Daphne & optional HTTP)
+# ✅ Expose necessary ports
 EXPOSE 8000 8001
 
-# ✅ Set Django environment variables
+# ✅ Set environment variable
 ENV DJANGO_SETTINGS_MODULE=gitlms.settings
 
-# ✅ Start Daphne server
+# ✅ Default CMD
 CMD ["daphne", "-u", "unix:/tmp/daphne.sock", "gitlms.asgi:application"]
