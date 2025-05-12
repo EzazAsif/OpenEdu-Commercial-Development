@@ -98,15 +98,15 @@ def getUsers(request, string):
     q = Q(
         "bool",
         should=[
-            Q("match_phrase_prefix", first_name=string),
-            Q("match_phrase_prefix", last_name=string),
-            Q("match_phrase_prefix", email=string),
+            Q("match", first_name={"query": string, "fuzziness": "AUTO"}),
+            Q("match", last_name={"query": string, "fuzziness": "AUTO"}),
+            Q("match", email={"query": string, "fuzziness": "AUTO"}),
         ],
         minimum_should_match=1
     )
+
     search_results = UserDocument.search().query(q)[:20]
 
-    # Extract indexed fields directly
     users = []
     seen_ids = set()
     for hit in search_results:
@@ -115,7 +115,7 @@ def getUsers(request, string):
         seen_ids.add(hit.meta.id)
 
         data = hit.to_dict()
-        data["id"] = hit.meta.id  # Ensure ID is included
+        data["id"] = hit.meta.id
         users.append(data)
 
     return JsonResponse(users, safe=False)
