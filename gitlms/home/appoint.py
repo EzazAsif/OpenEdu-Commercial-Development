@@ -108,7 +108,12 @@ def getUsers(request, string):
 
     # Extract indexed fields directly
     users = []
+    seen_ids = set()
     for hit in search_results:
+        if hit.meta.id in seen_ids:
+            continue
+        seen_ids.add(hit.meta.id)
+
         data = hit.to_dict()
         data["id"] = hit.meta.id  # Ensure ID is included
         users.append(data)
