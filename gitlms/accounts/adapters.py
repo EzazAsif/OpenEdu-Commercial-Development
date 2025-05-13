@@ -2,7 +2,7 @@ from allauth.account.adapter import DefaultAccountAdapter
 from .models import User
 
 class CustomAccountAdapter(DefaultAccountAdapter):
-    def is_open_for_signup(self,  sociallogin):
+    def is_open_for_signup(self, request, sociallogin):
         """
         By overriding this method, you can skip the sign-up page
         and directly log in the user if the email already exists.
