@@ -68,7 +68,7 @@ SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],
         'AUTH_PARAMS': {'access_type': 'online'},
-        'REDIRECT_URI': 'https://www.openedu.innovativecollections.com/accounts/google/login/callback/'
+        'REDIRECT_URI': 'https://www.openedu.innovativecollections.com/auth/google/login/callback/'
     }
 }
 
