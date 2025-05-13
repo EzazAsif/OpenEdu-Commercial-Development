@@ -6,7 +6,6 @@ A powerful, modern **Learning Management System (LMS)** built with **Django**, f
 - 💬 **Real-time chatting and notifications**
 - 📹 **Multimedia content management** (images, videos, documents)
 - ✅ **Approval system based on hierarchy levels**
-
 ---
 
 ## 🚀 Features
