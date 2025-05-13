@@ -1,7 +1,7 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.contrib.auth import get_user_model
 from allauth.socialaccount.models import SocialAccount
-from django.http import Http404
+from django.http import Http404 
 
 User = get_user_model()
 
@@ -35,3 +35,14 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
             except User.DoesNotExist:
                 pass  # Do nothing if user doesn't exist
 
+    def new_user(self, request, sociallogin):
+        """
+        Override to properly pass `sociallogin` when creating a new user.
+        """
+        # You can modify the `new_user()` method to create the user
+        # or use the default behavior from the parent adapter.
+        user = super().new_user(request, sociallogin)
+        # You may need to assign the sociallogin.user to the newly created user
+        # to make sure it is linked correctly.
+        sociallogin.user = user
+        return user
