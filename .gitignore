@@ -1,6 +1,6 @@
 # .gitignore
 
-
+gitlms/certbot/
 
 # Ignore compiled Python files
 __pycache__/

@@ -219,3 +219,6 @@ ELASTICSEARCH_DSL = {
     }
 }
 
+
+SOCIALACCOUNT_QUERY_EMAIL = True
+ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
