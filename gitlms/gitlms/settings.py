@@ -57,8 +57,10 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # Keep this line for default authentication
 )
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '572554124965-bler1fhbfl3u14u4qha0jusabkefbpuq.apps.googleusercontent.com'  # Replace with your actual Client ID
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'  # Replace with your actual Client Secret
+
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
