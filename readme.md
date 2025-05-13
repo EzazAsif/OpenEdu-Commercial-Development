@@ -8,7 +8,6 @@ A powerful, modern **Learning Management System (LMS)** built with **Django**, f
 - ✅ **Approval system based on hierarchy levels**
 ---
 
-
 ## 🚀 Features
 
 ### Hierarchical User Roles
