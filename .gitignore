@@ -1,9 +1,8 @@
 # .gitignore
 
 # Ignore live cert symlinks and sensitive keys
-gitlms/certbot/conf/live/
-gitlms/certbot/conf/archive/
-gitlms/certbot/conf/renewal/
+gitlms/
+
 
 # Ignore compiled Python files
 __pycache__/
