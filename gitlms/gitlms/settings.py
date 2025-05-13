@@ -62,8 +62,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '658919679693-anlo4slc9s93ced6oibk7kf6nopf3luc.apps.googleusercontent.com'  # Replace with your actual Client ID
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'  # Replace with your actual Client Secret
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],
