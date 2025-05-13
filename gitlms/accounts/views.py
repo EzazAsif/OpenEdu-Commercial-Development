@@ -96,6 +96,7 @@ def edit_profile(request):
             user.last_name = Lastname
         if Email:
             user.email = Email
+            user.username=Email
         if picture:
             user.profilepicture = picture
 
