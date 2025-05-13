@@ -1,7 +1,11 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.contrib.auth import get_user_model
 from allauth.socialaccount.models import SocialAccount
-from django.http import Http404 
+from django.http import Http404
+import logging
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -39,10 +43,21 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         """
         Override to properly pass `sociallogin` when creating a new user.
         """
-        # You can modify the `new_user()` method to create the user
-        # or use the default behavior from the parent adapter.
+        if sociallogin is None:
+            logger.error("sociallogin is not passed correctly!")
+            raise Exception("sociallogin is not passed correctly!")
+
+        # Debugging line to log the sociallogin object
+        logger.debug(f"Sociallogin: {sociallogin}")  # Log sociallogin
+
+        # Call the parent method to create the user and pass the sociallogin
         user = super().new_user(request, sociallogin)
-        # You may need to assign the sociallogin.user to the newly created user
-        # to make sure it is linked correctly.
+
+        # Link the social login to the newly created user
         sociallogin.user = user
+        sociallogin.save()  # Save the sociallogin object to persist the link
+
+        # Log the user creation
+        logger.debug(f"Created user: {user}")
+
         return user
