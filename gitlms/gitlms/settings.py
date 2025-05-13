@@ -38,34 +38,42 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts','home','errors','lms', 'notifications','commChat','videomeet', 'django_elasticsearch_dsl', 'social_django',
+    'accounts','home','errors','lms', 'notifications','commChat','videomeet', 'django_elasticsearch_dsl', 'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     'allauth.account.middleware.AccountMiddleware',  # Allauth specific middleware
+    'allauth.socialaccount.middleware.SocialAccountMiddleware',  # Social account middleware
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    'django.contrib.auth.backends.ModelBackend',  # Keep this line for default authentication
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '658919679693-anlo4slc9s93ced6oibk7kf6nopf3luc.apps.googleusercontent.com'  # Replace with your actual Client ID
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'  # Replace with your actual Client Secret
-
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+        'REDIRECT_URI': 'https://www.openedu.innovativecollections.com/accounts/google/login/callback/'
+    }
+}
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://www.openedu.innovativecollections.com/complete/google/'
-
 
 ROOT_URLCONF = 'gitlms.urls'
 
