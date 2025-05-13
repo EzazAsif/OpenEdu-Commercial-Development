@@ -58,12 +58,13 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '572554124965-bler1fhbfl3u14u4qha0jusabkefbpuq.apps.googleusercontent.com'  # Replace with your actual Client ID
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'  # Replace with your actual Client Secret
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '658919679693-anlo4slc9s93ced6oibk7kf6nopf3luc.apps.googleusercontent.com'  # Replace with your actual Client ID
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'  # Replace with your actual Client Secret
 
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://www.openedu.innovativecollections.com/complete/google/'
 
 
 ROOT_URLCONF = 'gitlms.urls'
