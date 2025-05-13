@@ -221,4 +221,4 @@ ELASTICSEARCH_DSL = {
 
 
 SOCIALACCOUNT_QUERY_EMAIL = True
-ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
+ACCOUNT_ADAPTER = 'accounts.adapters.MySocialAccountAdapter'
