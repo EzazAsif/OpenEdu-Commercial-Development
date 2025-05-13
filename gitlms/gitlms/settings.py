@@ -54,7 +54,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
      'allauth.account.middleware.AccountMiddleware',  # Allauth specific middleware
-    'allauth.socialaccount.middleware.SocialAccountMiddleware',  # Social account middleware
 ]
 
 AUTHENTICATION_BACKENDS = (
