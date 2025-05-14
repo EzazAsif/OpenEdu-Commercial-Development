@@ -5,16 +5,17 @@ from lms.models import Institute,Department,Course
 from lms.queryProxy import QueryCacheProxy
 from django.core.cache import cache
 
+
 def home(request):
-    if not request.user.is_authenticated:
-         return redirect('welcome')
-    elif (not request.user.password) or (not request.user.username)or (not request.user.first_name)or (not request.user.last_name):
+    user = request.user
+
+    if not user.is_authenticated:
+        return redirect('welcome')
+    
+    if not user.has_usable_password() or not all([user.username, user.first_name, user.last_name]):
         return redirect('completesignup')
-    else:
-        return redirect('institutes')
-       
 
-
+    return redirect('institutes')
 
 @login_required
 def students(request):
