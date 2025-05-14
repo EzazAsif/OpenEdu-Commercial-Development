@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from lms.models import Department, Course,Institute
+from lms.models import Department, Course
 from accounts.models import User
 from django.shortcuts import redirect
 from django.http import JsonResponse
@@ -7,28 +7,14 @@ from elasticsearch_dsl import Q
 from accounts.documents import UserDocument
 from lms.queryProxy import QueryCacheProxy
 from django.contrib.auth.decorators import login_required
-
-
-def get_courses_by_department(request, department_id):
-    department = Department.objects.get(id=department_id)
-    courses = Course.objects.filter(department=department).values('id', 'course_code','course_name')
-    return JsonResponse(list(courses), safe=False)
-
-def get_institutes(request):
-    institutes = Institute.objects.all().values('id', 'name')
-    
-    return JsonResponse(list(institutes), safe=False)
-
-def get_departments_by_Institutes(request,ins_id):
-    institute = Institute.objects.get(id=ins_id)
-    departments = Department.objects.filter(institute=institute).values('id', 'name')
-    
-    return JsonResponse(list(departments), safe=False)
-
+import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .queryfuncs import *
 
-import json
+
+
+
 
 @csrf_exempt
 def appoint_user(request):
@@ -143,8 +129,7 @@ def getUsersappoint(request, string, ins_id):
         # ins_id is mandatory here; get institute, departments and courses
         institute = proxy._get_institute(ins_id)
 
-        department_ids = Department.objects.filter(institute=institute).values_list('id', flat=True)
-        course_ids = Course.objects.filter(department__in=department_ids).values_list('id', flat=True)
+        department_ids,course_ids = get_department_and_course_ids(institute)
 
         q_admins = Q('terms', department=list(department_ids))
         q_mods = Q('terms', course=list(course_ids))

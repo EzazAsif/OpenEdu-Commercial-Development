@@ -34,8 +34,10 @@ searchbar.addEventListener("keyup", function () {
         };
 
         data.forEach((user) => {
-          if (user.role === "admin") grouped.Admin.push(user);
-          else if (user.role === "mod") grouped.Moderator.push(user);
+          if ((user.role === "admin") & (user.id in department_ids))
+            grouped.Admin.push(user);
+          else if ((user.role === "mod") & (user.id in course_ids))
+            grouped.Moderator.push(user);
           else if (user.role === "user") grouped.User.push(user);
         });
 
@@ -43,7 +45,8 @@ searchbar.addEventListener("keyup", function () {
           if (users.length === 0) return;
 
           const header = document.createElement("h1");
-          header.className = "text-2xl sm:text-4xl font-bold text-blue-900 mb-4";
+          header.className =
+            "text-2xl sm:text-4xl font-bold text-blue-900 mb-4";
           header.textContent = title;
           slist.appendChild(header);
 
@@ -51,16 +54,26 @@ searchbar.addEventListener("keyup", function () {
             const userCard = `
               <div class="flex flex-col sm:flex-row sm:items-center bg-white p-4 sm:p-6 rounded-lg shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-[1.02] relative">
                 <div class="w-16 h-16 mb-4 sm:mb-0 sm:mr-4 mx-auto sm:mx-0">
-                  <img src="${user.profilepicture}" class="w-full h-full rounded-full object-cover" />
+                  <img src="${
+                    user.profilepicture
+                  }" class="w-full h-full rounded-full object-cover" />
                 </div>
                 <div class="flex-grow text-center sm:text-left">
-                  <h3 class="text-base sm:text-lg font-semibold text-blue-900">${user.first_name} ${user.last_name}</h3>
-                  <p class="text-gray-600 text-sm sm:text-base">Email: ${user.email}</p>
+                  <h3 class="text-base sm:text-lg font-semibold text-blue-900">${
+                    user.first_name
+                  } ${user.last_name}</h3>
+                  <p class="text-gray-600 text-sm sm:text-base">Email: ${
+                    user.email
+                  }</p>
                   <p class="text-gray-600 text-sm sm:text-base">${user.role}</p>
                 </div>
-                <button onclick="showAppointModal('${appointRole}', '${user.id}', userInstituteId)"
+                <button onclick="showAppointModal('${appointRole}', '${
+              user.id
+            }', userInstituteId)"
                   class="bg-gray-200 hover:bg-gray-300 p-2 rounded-full focus:outline-none mt-4 sm:mt-0 sm:ml-4">
-                  Assign ${appointRole.charAt(0).toUpperCase() + appointRole.slice(1)}
+                  Assign ${
+                    appointRole.charAt(0).toUpperCase() + appointRole.slice(1)
+                  }
                 </button>
               </div>
             `;

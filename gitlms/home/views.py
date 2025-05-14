@@ -6,7 +6,7 @@ from lms.queryProxy import QueryCacheProxy
 from django.core.cache import cache
 from elasticsearch_dsl import Q
 from accounts.documents import UserDocument
-
+from.queryfuncs import get_department_and_course_ids
 
 def home(request):
     user = request.user
@@ -77,8 +77,8 @@ def appoint(request):
     try:
         if request.user.institute != -1:
             institute = proxy._get_institute(request.user.institute)
-            department_ids = Department.objects.filter(institute=institute).values_list('id', flat=True)
-            course_ids = Course.objects.filter(department__in=department_ids).values_list('id', flat=True)
+            department_ids,course_ids = get_department_and_course_ids(institute)
+            
 
             # Elasticsearch queries for admins and moderators filtering by department and course ids
             q_admins = Q('terms', department=list(department_ids))
@@ -147,6 +147,8 @@ def appoint(request):
         'isMaster': isMaster,
         'offset': offset,
         'limit': limit,
+        'departments':department_ids,
+        'courses':course_ids,
     }
 
     return render(request, "pages/appoint.html", context)

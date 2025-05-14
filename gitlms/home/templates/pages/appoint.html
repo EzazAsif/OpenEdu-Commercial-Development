@@ -83,6 +83,12 @@
 
 <!-- Appoint Modal -->
 {% include 'appoint_modals/appointModal.html' %}
+
+<script type="text/javascript">
+  const department_ids={{department}};
+  const course_ids= {{courses}};
+</script>
+
 <!--             -->
 <script src="{% static 'js/studentSearchAppoint.js' %}"></script>
 <script src="{% static 'js/appointDropDown.js' %}"></script>
