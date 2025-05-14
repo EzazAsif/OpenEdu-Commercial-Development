@@ -5,16 +5,17 @@ from abc import ABC, abstractmethod
 
 class AbstractContentFactory(ABC):
     @abstractmethod
-    def create_content( faculty, name, content_file):
+    def create_content( faculty, name, content_file,uploaded_by):
         pass
 
 
 class SlideFactory(AbstractContentFactory):
-    def create_content( faculty, name, content_file):
+    def create_content( faculty, name, content_file,uploaded_by):
         slide_instance = Slide(
             name=name,
             faculty=faculty,
             content=content_file,
+            uploaded_by=uploaded_by,
         )
         adapter = ContentUploadAdapter(content_type='slide', is_temp=False)
         upload_strategy = adapter.get_upload_strategy()
@@ -24,11 +25,12 @@ class SlideFactory(AbstractContentFactory):
 
 
 class VideoFactory(AbstractContentFactory):
-    def create_content( faculty, name, content_file):
+    def create_content( faculty, name, content_file,uploaded_by):
         video_instance = Video(
             name=name,
             faculty=faculty,
             content=content_file,
+            uploaded_by=uploaded_by,
         )
         adapter = ContentUploadAdapter(content_type='video', is_temp=False)
         upload_strategy = adapter.get_upload_strategy()
@@ -38,11 +40,12 @@ class VideoFactory(AbstractContentFactory):
 
 
 class NoteFactory(AbstractContentFactory):
-    def create_content( faculty, name, content_file):
+    def create_content( faculty, name, content_file,uploaded_by):
         note_instance = Note(
             name=name,
             faculty=faculty,
             content=content_file,
+            uploaded_by=uploaded_by,
         )
         adapter = ContentUploadAdapter(content_type='note', is_temp=False)
         upload_strategy = adapter.get_upload_strategy()
@@ -53,17 +56,18 @@ class NoteFactory(AbstractContentFactory):
 
 class AbstractTemporaryContentFactory(ABC):
     @abstractmethod
-    def create_temp_content( real_instance, faculty, name, content_file):
+    def create_temp_content( real_instance, faculty, name, content_file,uploaded_by):
         pass
 
 
 class TemporarySlideFactory(AbstractTemporaryContentFactory):
-    def create_temp_content( real_instance, faculty, name, content_file):
+    def create_temp_content( real_instance, faculty, name, content_file,uploaded_by):
         temp_slide_instance = temp_Slide(
             name=name,
             real=real_instance,
             faculty=faculty,
             content=content_file,
+            uploaded_by=uploaded_by,
         )
         adapter = ContentUploadAdapter(content_type='slide', is_temp=True)
         upload_strategy = adapter.get_upload_strategy()
@@ -73,12 +77,13 @@ class TemporarySlideFactory(AbstractTemporaryContentFactory):
 
 
 class TemporaryVideoFactory(AbstractTemporaryContentFactory):
-    def create_temp_content( real_instance, faculty, name, content_file):
+    def create_temp_content( real_instance, faculty, name, content_file,uploaded_by):
         temp_video_instance = temp_Video(
             name=name,
             real=real_instance,
             faculty=faculty,
             content=content_file,
+            uploaded_by=uploaded_by,
         )
         adapter = ContentUploadAdapter(content_type='video', is_temp=True)
         upload_strategy = adapter.get_upload_strategy()
@@ -88,12 +93,13 @@ class TemporaryVideoFactory(AbstractTemporaryContentFactory):
 
 
 class TemporaryNoteFactory(AbstractTemporaryContentFactory):
-    def create_temp_content( real_instance, faculty, name, content_file):
+    def create_temp_content( real_instance, faculty, name, content_file,uploaded_by):
         temp_note_instance = temp_Note(
             name=name,
             real=real_instance,
             faculty=faculty,
             content=content_file,
+            uploaded_by=uploaded_by,
         )
         adapter = ContentUploadAdapter(content_type='note', is_temp=True)
         upload_strategy = adapter.get_upload_strategy()

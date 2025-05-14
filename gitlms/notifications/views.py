@@ -105,6 +105,7 @@ def approve_not(request, not_id):
                 name=temp_content.name,
                 faculty=temp_content.faculty,
                 content=temp_content.content,  # Using content from the temporary content
+                uploaded_by=temp_content.uploaded_by
             )
 
             # Set the real_content_id in the notification
@@ -124,8 +125,10 @@ def approve_not(request, not_id):
             temp_content = get_object_or_404(temp_content_model, id=notification.content_id)  # Get associated temp content
             if temp_content.name:
                 content.name = temp_content.name  # Update the real content's name
-            if temp_content:
+            if temp_content.content:
                 content.content = temp_content.content  # Update the real content's content
+            if temp_content.uploaded_by:
+                content.uploaded_by = temp_content.uploaded_by
             content.save()  # Save the updated real content to the database
 
             # Set the real_content_id to the updated content ID
