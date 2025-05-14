@@ -29,7 +29,7 @@ def parse_flexible_timestamp(raw_timestamp, output_format="%b %d, %Y %I:%M %p"):
     return localized.strftime(output_format)
 
 @login_required
-def get_cached_chat_messages(ins_id):
+def get_cached_chat_messages(request,ins_id):
     group_key = f"chat_{ins_id}"
     index_key = f"{group_key}:index"
     message_keys = cache.get(index_key, [])
