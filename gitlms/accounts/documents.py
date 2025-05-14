@@ -31,18 +31,29 @@ user_index.settings(
     }
 )
 
+
+
 @registry.register_document
 class UserDocument(Document):
     first_name = fields.TextField(analyzer='autocomplete', search_analyzer='autocomplete_search')
     last_name = fields.TextField(analyzer='autocomplete', search_analyzer='autocomplete_search')
     email = fields.TextField(analyzer='autocomplete', search_analyzer='autocomplete_search')
 
+    # Add department and course as keyword or integer fields (depending on mapping)
+    department = fields.IntegerField()  # or fields.KeywordField() if you want exact match string
+    course = fields.IntegerField()
+
     class Index:
         name = 'users'
-        settings = user_index._settings  # 👈 important: include the settings in the mapping
+        settings = user_index._settings  # Your existing settings
 
     class Django:
         model = User
-        fields = ['id', 'role', 'profilepicture']
-
+        fields = [
+            'id',
+            'role',
+            'profilepicture',
+            'department',
+            'course',
+        ]
 
