@@ -192,6 +192,6 @@ def completesignup(request):
         observer = UserProfileUpdatedObserver()
         observer.update(request,user)
 
-        return redirect('/')
+        return redirect('institutes')
     
     return render(request, "logincompletion.html", context={'users': user})
