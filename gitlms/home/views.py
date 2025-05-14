@@ -19,7 +19,11 @@ def home(request):
 
 @login_required
 def students(request):
-    users=User.objects.all()
+    cache_key = 'all_users'
+    users=cache.get(cache_key)
+    if not users:
+       users=User.objects.all()
+       cache.set(cache_key, users, timeout=60*15)  # Cache for 15 minutes
     context={'name':request.user.username,'users':users}
 
     return render(request,"pages/students.html",context)
