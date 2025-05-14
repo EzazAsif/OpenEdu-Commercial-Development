@@ -4,7 +4,7 @@ from accounts.models import User
 from lms.models import Institute,Department,Course
 from lms.queryProxy import QueryCacheProxy
 from django.core.cache import cache
-
+import time
 
 def home(request):
     user = request.user
@@ -49,7 +49,7 @@ def students(request):
 
 @login_required
 def appoint(request):
-    cache_key = 'regular_users'
+    cache_key_base = 'regular_users'
     proxy = QueryCacheProxy(request.user)
 
     if request.user.role not in ['admin', 'master']:
@@ -58,7 +58,11 @@ def appoint(request):
     # Default empty sets to avoid errors
     admins = User.objects.none()
     moderators = User.objects.none()
-    rusers = User.objects.none()
+    rusers = []
+    # Pagination parameters for rusers lazy loading
+    offset = int(request.GET.get('offset', 0))
+    limit = int(request.GET.get('limit', 20))  # default 1 per your case
+    
 
     if request.user.institute != -1:
         try:
@@ -68,13 +72,12 @@ def appoint(request):
 
             admins = User.objects.filter(department__in=department_ids)
             moderators = User.objects.filter(course__in=course_ids)
+            cache_key = f"{cache_key_base}_{offset}_{limit}"
             rusers = cache.get(cache_key)
             if rusers is None:
-                print("No cache")
-                rusers = list(User.objects.filter(role='user'))  # Convert to list before caching
-                cache.set(cache_key, rusers, timeout=60*15)  # Cache for 15 minutes
-            else:
-                print("using cache")
+                print("No cache for rusers slice")
+                rusers = list(User.objects.filter(role='user')[offset:offset + limit])
+                cache.set(cache_key, rusers, timeout=60 * 15)
         
         except Institute.DoesNotExist:
             pass
@@ -85,31 +88,41 @@ def appoint(request):
             course_ids = Course.objects.filter(department=department).values_list('id', flat=True)
 
             moderators = User.objects.filter(course__in=course_ids)
+            cache_key = f"{cache_key_base}_{offset}_{limit}"
             rusers = cache.get(cache_key)
-
             if rusers is None:
-                print("No cache")
-                rusers = list(User.objects.filter(role='user'))  # Convert to list before caching
-                cache.set(cache_key, rusers, timeout=60*15)  # Cache for 15 minutes
-            else:
-                print("using cache")
+                print("No cache for rusers slice")
+                rusers = list(User.objects.filter(role='user')[offset:offset + limit])
+                cache.set(cache_key, rusers, timeout=60 * 15)
         
         except Department.DoesNotExist:
             pass
-    
+    print()
+    print(rusers,limit,offset)
     isMaster=request.user.role=='master'
     if(request.user.institute!=-1):
         instituteId=request.user.institute
     if(request.user.department!=-1):
         instituteId=Department.objects.get(id=request.user.department).institute.id
-    context = {
-        'instituteId':instituteId,
-        'name': request.user.username,
+    if request.headers.get('HX-Request'):
+        context = {
         'rusers': rusers,
-        'admins': admins,
-        'moderators': moderators,
-        'isMaster':isMaster
+        'offset': offset,
+        'limit': limit,
     }
+        
+       
+        return render(request, 'partials/rusers_list.html',context)
+    context = {
+    'instituteId': instituteId,
+    'name': request.user.username,
+    'rusers': rusers,
+    'admins': admins,
+    'moderators': moderators,
+    'isMaster': isMaster,
+    'offset': offset,
+    'limit': limit,
+}
 
     return render(request, "pages/appoint.html", context)
 

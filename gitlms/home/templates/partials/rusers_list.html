@@ -1,0 +1,41 @@
+{% for user in rusers %}
+<div
+  class="flex flex-col sm:flex-row sm:items-center bg-white p-4 sm:p-6 rounded-lg shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-[1.02] relative"
+>
+  <div class="w-16 h-16 mb-4 sm:mb-0 sm:mr-4 mx-auto sm:mx-0">
+    <img
+      src="{{ user.profilepicture.url }}"
+      class="w-full h-full rounded-full object-cover"
+    />
+  </div>
+  <div class="flex-grow text-center sm:text-left">
+    <h3 class="text-base sm:text-lg font-semibold text-blue-900">
+      {{ user.first_name }} {{ user.last_name }}
+    </h3>
+    <p class="text-gray-600 text-sm sm:text-base">Email: {{ user.email }}</p>
+    <p class="text-gray-600 text-sm sm:text-base">{{ user.role }}</p>
+  </div>
+  <button
+    onclick="showAppointModal('moderator', '{{ user.id }}',userInstituteId)"
+    class="bg-gray-200 hover:bg-gray-300 p-2 rounded-full focus:outline-none mt-4 sm:mt-0 sm:ml-4"
+  >
+    Assign User
+  </button>
+</div>
+{% endfor %} {% if rusers|length == limit %}
+<div
+  id="load-more-trigger"
+  hx-get="{% url 'appoint' %}?offset={{ offset|add:limit }}"
+  hx-trigger="revealed"
+  hx-target="#load-more-trigger"
+  hx-swap="outerHTML"
+  class="load-more-trigger flex justify-center items-center py-4"
+>
+  <div
+    class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
+  ></div>
+</div>
+{% else %}
+<!-- No more users: remove spinner -->
+<div id="load-more-trigger"></div>
+{% endif %}
