@@ -53,7 +53,6 @@ class UserDocument(Document):
             'id',
             'role',
             'profilepicture',
-            'department',
-            'course',
+           
         ]
 
