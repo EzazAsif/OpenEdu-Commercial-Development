@@ -61,7 +61,7 @@ def appoint(request):
     rusers = []
     # Pagination parameters for rusers lazy loading
     offset = int(request.GET.get('offset', 0))
-    limit = int(request.GET.get('limit', 20))  # default 1 per your case
+    limit = int(request.GET.get('limit', 1))  # default 1 per your case
     
 
     if request.user.institute != -1:
@@ -105,6 +105,7 @@ def appoint(request):
     if(request.user.department!=-1):
         instituteId=Department.objects.get(id=request.user.department).institute.id
     if request.headers.get('HX-Request'):
+        time.sleep(3)
         context = {
         'rusers': rusers,
         'offset': offset,
