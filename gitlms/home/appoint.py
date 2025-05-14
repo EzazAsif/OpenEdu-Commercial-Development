@@ -5,6 +5,8 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 from elasticsearch_dsl import Q
 from accounts.documents import UserDocument
+from lms.queryProxy import QueryCacheProxy
+from django.contrib.auth.decorators import login_required
 
 
 def get_courses_by_department(request, department_id):
@@ -93,7 +95,7 @@ def appoint_user(request):
 
 
 
-
+@login_required
 def getUsers(request, string):
     q = Q(
         "bool",
@@ -118,4 +120,53 @@ def getUsers(request, string):
         data["id"] = hit.meta.id
         users.append(data)
 
+    return JsonResponse(users, safe=False)
+
+
+@login_required
+def getUsers(request, string, ins_id):
+    base_q = Q(
+        "bool",
+        should=[
+            Q("match", first_name={"query": string, "fuzziness": "AUTO"}),
+            Q("match", last_name={"query": string, "fuzziness": "AUTO"}),
+            Q("match", email={"query": string, "fuzziness": "AUTO"}),
+        ],
+        minimum_should_match=1
+    )
+
+    # If user role is 'user', return all matching users without institute filtering
+    if hasattr(request.user, 'role') and request.user.role == 'user':
+        search_results = UserDocument.search().query(base_q)[:20]
+    else:
+        # ins_id is mandatory here; get institute, departments and courses
+        institute = proxy._get_institute(ins_id)
+
+        department_ids = Department.objects.filter(institute=institute).values_list('id', flat=True)
+        course_ids = Course.objects.filter(department__in=department_ids).values_list('id', flat=True)
+
+        q_admins = Q('terms', department=list(department_ids))
+        q_mods = Q('terms', course=list(course_ids))
+
+        combined_q = Q(
+            'bool',
+            must=base_q,
+            should=[q_admins, q_mods],
+            minimum_should_match=1
+        )
+
+        search_results = UserDocument.search().query(combined_q)[:20]
+
+    users = []
+    seen_ids = set()
+    for hit in search_results:
+        if hit.meta.id in seen_ids:
+            continue
+        seen_ids.add(hit.meta.id)
+
+        data = hit.to_dict()
+        data["id"] = hit.meta.id
+        users.append(data)
+        if len(users) >= 20:
+            break
     return JsonResponse(users, safe=False)
