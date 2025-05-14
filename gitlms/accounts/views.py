@@ -194,4 +194,4 @@ def completesignup(request):
 
         return redirect('/')
     
-    return render(request, "logincompletion.html.html", context={'users': user})
+    return render(request, "logincompletion.html", context={'users': user})
