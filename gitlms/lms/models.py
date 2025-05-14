@@ -27,8 +27,8 @@ class Department(ImageResizeMixin,models.Model):
 
 class Course(ImageResizeMixin,models.Model):
     id = models.AutoField(primary_key=True)  # Automatically generates a primary key
-    course_code = models.CharField(max_length=6, unique=True)  # Unique course code
-    course_name = models.CharField(max_length=50)  # Course name
+    course_code = models.CharField(max_length=10, unique=True)  # Unique course code
+    course_name = models.CharField(max_length=100)  # Course name
     course_description = models.TextField(
         max_length=1000,default="This course provides a comprehensive overview of essential topics, methodologies, and concepts. Further details will be provided."
     )  # Description of the course
