@@ -51,7 +51,7 @@ def get_cached_chat_messages(request,ins_id):
 def commChat(request, ins_id):
     proxy = QueryCacheProxy(request.user)
     institute = proxy._get_institute(ins_id)
-    messages = get_cached_chat_messages(ins_id)
+    messages = get_cached_chat_messages(request,ins_id)
     print(messages)
     for msg in messages:
         # Ensure sender ID is int for safe comparison in template
