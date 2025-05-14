@@ -11,7 +11,7 @@ from .facade import RegistrationFacade
 from .factory import SessionDisplayFactory 
 from django.contrib.sessions.models import Session
 from django.utils import timezone
-from allauth.socialaccount.models import SocialAccount, SocialApp
+
 
 
 def home(request):
@@ -63,12 +63,6 @@ def signup(request):
             registration_facade = RegistrationFacade()  # Use the facade for registration
             user = registration_facade.register(data)  # Call the facade's register method
         # Here you can associate the SocialAccount with the user
-            social_account = SocialAccount.objects.create(
-            user=user,
-            provider='google'
-        )
-        
-            social_account.save()
             messages.success(request, "Registration successful. You can now log in.")
 
             return redirect('/accounts/login/')
@@ -200,4 +194,4 @@ def completesignup(request):
 
         return redirect('/')
     
-    return render(request, "editprofile.html", context={'users': user})
+    return render(request, "logincompletion.html.html", context={'users': user})
