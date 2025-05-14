@@ -17,16 +17,34 @@ def home(request):
 
     return redirect('institutes')
 
+
+
 @login_required
 def students(request):
-    cache_key = 'all_users'
-    users=cache.get(cache_key)
-    if not users:
-       users=User.objects.all()
-       cache.set(cache_key, users, timeout=60*15)  # Cache for 15 minutes
-    context={'name':request.user.username,'users':users}
+    # Parameters for pagination (lazy loading)
+    offset = int(request.GET.get('offset', 0))
+    limit = 20  # number of users per batch
 
-    return render(request,"pages/students.html",context)
+    cache_key = f'all_users_{offset}_{limit}'
+    users = cache.get(cache_key)
+    if not users:
+        users = list(User.objects.all()[offset:offset + limit])
+        cache.set(cache_key, users, timeout=60 * 15)
+
+    context = {
+        'users': users,
+        'offset': offset,
+        'limit': limit,
+    }
+
+    # Check if request is from htmx (partial)
+    if request.headers.get('HX-Request'):
+        return render(request, 'partials/user_list.html', context)
+
+    # Normal full page render
+    context['name'] = request.user.username
+    return render(request, 'pages/students.html', context)
+
 
 
 @login_required

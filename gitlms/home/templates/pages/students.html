@@ -10,28 +10,11 @@
     />
   </div>
   <div class="space-y-4 sm:space-y-6" id="list">
-    {% for user in users %}
-    <!-- Student Card -->
-    <div
-      class="flex items-center bg-white p-4 sm:p-6 rounded-lg shadow-md hover:shadow-xl transition-transform duration-300 transform hover:scale-105"
-    >
-      <div class="w-14 h-14 sm:w-16 sm:h-16 mr-4 flex-shrink-0">
-        <img
-          src="{{ user.profilepicture.url }}"
-          class="w-full h-full rounded-full object-cover"
-        />
-      </div>
-      <div class="text-sm sm:text-base">
-        <h3 class="font-semibold text-blue-900">
-          {{ user.first_name }} {{ user.last_name }}
-        </h3>
-        <p class="text-gray-600">Email: {{ user.email }}</p>
-        <p class="text-gray-600">{{ user.role }}</p>
-      </div>
-    </div>
-    {% endfor %}
+    {% include 'partials/user_list.html' %}
   </div>
   <div class="space-y-4 sm:space-y-6" id="slist"></div>
 </div>
 <script src="{% static 'js/studentSearch.js' %}"></script>
+<script src="https://unpkg.com/htmx.org@1.9.2"></script>
+
 {%endblock%}

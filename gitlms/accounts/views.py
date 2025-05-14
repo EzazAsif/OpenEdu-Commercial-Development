@@ -14,12 +14,6 @@ from django.utils import timezone
 
 
 
-def home(request):
-    if request.user.is_authenticated:
-        return redirect('departments')
-    else:
-        return redirect('welcome')
-
 
 
 @log_activity  # Apply the decorator to log activity for login
@@ -168,7 +162,8 @@ def completesignup(request):
         password = data.get('psw')
         rpassword = data.get('psw-repeat')
         picture = request.FILES.get('editpp')
-        user.username=user.email
+        if user.username != user.email:
+           user.username=user.email    
         if password and rpassword:
             if (password != rpassword):
                messages.error(request, "Passwords don't match")
