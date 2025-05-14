@@ -124,7 +124,8 @@ def getUsers(request, string):
 
 
 @login_required
-def getUsers(request, string, ins_id):
+def getUsersappoint(request, string, ins_id):
+    proxy=QueryCacheProxy(request.user)
     base_q = Q(
         "bool",
         should=[
