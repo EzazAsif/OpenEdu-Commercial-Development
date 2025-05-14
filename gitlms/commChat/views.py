@@ -5,6 +5,7 @@ import json
 from datetime import datetime, timedelta
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import localtime, now
+from django.contrib.auth.decorators import login_required
 
 def parse_flexible_timestamp(raw_timestamp, output_format="%b %d, %Y %I:%M %p"):
     """
@@ -27,6 +28,7 @@ def parse_flexible_timestamp(raw_timestamp, output_format="%b %d, %Y %I:%M %p"):
     localized = localtime(parsed)
     return localized.strftime(output_format)
 
+@login_required
 def get_cached_chat_messages(ins_id):
     group_key = f"chat_{ins_id}"
     index_key = f"{group_key}:index"
@@ -45,6 +47,7 @@ def get_cached_chat_messages(ins_id):
 
     return messages
 
+@login_required
 def commChat(request, ins_id):
     proxy = QueryCacheProxy(request.user)
     institute = proxy._get_institute(ins_id)

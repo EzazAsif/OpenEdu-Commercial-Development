@@ -6,10 +6,13 @@ from lms.queryProxy import QueryCacheProxy
 from django.core.cache import cache
 
 def home(request):
-    if request.user.is_authenticated:
-        return redirect('institutes')
+    if not request.user.is_authenticated:
+         return redirect('welcome')
+    elif (not request.user.password) or (not request.user.username)or (not request.user.first_name)or (not request.user.last_name):
+        return redirect('completesignup')
     else:
-        return redirect('welcome')
+        return redirect('institutes')
+       
 
 
 

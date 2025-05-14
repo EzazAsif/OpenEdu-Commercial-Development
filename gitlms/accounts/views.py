@@ -5,15 +5,13 @@ from django.contrib.auth.decorators import login_required
 from .models import User
 from .accountfuncs import checkvalidity
 from .decorators import log_activity
-from .singleton import UserSingleton
-from .strategies import RegularUserRegistration
 from .observers import UserProfileUpdatedObserver
 from .facade import RegistrationFacade
 # from .observers import SessionLogger, SessionAnalytics
 from .factory import SessionDisplayFactory 
 from django.contrib.sessions.models import Session
 from django.utils import timezone
-
+from allauth.socialaccount.models import SocialAccount, SocialApp
 
 
 def home(request):
@@ -64,7 +62,15 @@ def signup(request):
         if checkvalidity(request, passw=password, rpassw=rpassword, username=username, email=Email):
             registration_facade = RegistrationFacade()  # Use the facade for registration
             user = registration_facade.register(data)  # Call the facade's register method
+        # Here you can associate the SocialAccount with the user
+            social_account = SocialAccount.objects.create(
+            user=user,
+            provider='google'
+        )
+        
+            social_account.save()
             messages.success(request, "Registration successful. You can now log in.")
+
             return redirect('/accounts/login/')
         
     return render(request, "registration.html")
@@ -155,3 +161,43 @@ def login_sessions(request):
     return render(request, 'loginsessions.html', {
         'active_sessions': sorted(active_sessions, key=lambda x: x['last_activity'], reverse=True)
     })
+
+
+@login_required
+@log_activity  # Apply the decorator to log activity for profile editing
+def completesignup(request):
+    user = request.user
+    if request.method == "POST":
+        data = request.POST
+        Firstname = data.get('FirstName')
+        Lastname = data.get('LastName')
+        password = data.get('psw')
+        rpassword = data.get('psw-repeat')
+        picture = request.FILES.get('editpp')
+        user.username=user.email
+        if password and rpassword:
+            if (password != rpassword):
+               messages.error(request, "Passwords don't match")
+            elif len(password)<8:
+                messages.error(request, "Passwords length too small")
+            else:
+                user.set_password(password)
+
+        if Firstname:
+            user.first_name = Firstname
+        if Lastname:
+            user.last_name = Lastname
+        
+          
+        if picture:
+            user.profilepicture = picture
+
+        user.save()
+        
+        # Notify observers about the profile update
+        observer = UserProfileUpdatedObserver()
+        observer.update(request,user)
+
+        return redirect('/')
+    
+    return render(request, "editprofile.html", context={'users': user})
