@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 from elasticsearch_dsl import Q
 from accounts.documents import UserDocument
-from accounts.serializers import UserSerializer
+
 
 def get_courses_by_department(request, department_id):
     department = Department.objects.get(id=department_id)

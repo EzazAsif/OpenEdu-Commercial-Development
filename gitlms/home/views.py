@@ -4,7 +4,9 @@ from accounts.models import User
 from lms.models import Institute,Department,Course
 from lms.queryProxy import QueryCacheProxy
 from django.core.cache import cache
-import time
+from elasticsearch_dsl import Q
+from accounts.documents import UserDocument
+
 
 def home(request):
     user = request.user
@@ -19,16 +21,27 @@ def home(request):
 
 
 
+
+
 @login_required
 def students(request):
-    # Parameters for pagination (lazy loading)
     offset = int(request.GET.get('offset', 0))
     limit = 20  # number of users per batch
 
     cache_key = f'all_users_{offset}_{limit}'
     users = cache.get(cache_key)
+
     if not users:
-        users = list(User.objects.all()[offset:offset + limit])
+        # Elasticsearch query to get all users (assuming no filter needed)
+        # If you want, you can add a filter query here (e.g. role='user' or active=True)
+        search = UserDocument.search()[offset:offset + limit]
+
+        users = []
+        for hit in search:
+            data = hit.to_dict()
+            data['id'] = hit.meta.id
+            users.append(data)
+
         cache.set(cache_key, users, timeout=60 * 15)
 
     context = {
@@ -37,13 +50,12 @@ def students(request):
         'limit': limit,
     }
 
-    # Check if request is from htmx (partial)
     if request.headers.get('HX-Request'):
         return render(request, 'partials/user_list.html', context)
 
-    # Normal full page render
     context['name'] = request.user.username
     return render(request, 'pages/students.html', context)
+
 
 
 
@@ -55,75 +67,87 @@ def appoint(request):
     if request.user.role not in ['admin', 'master']:
         return redirect('/errors/unauthorizedaccess')
 
-    # Default empty sets to avoid errors
     admins = User.objects.none()
     moderators = User.objects.none()
     rusers = []
-    # Pagination parameters for rusers lazy loading
-    offset = int(request.GET.get('offset', 0))
-    limit = int(request.GET.get('limit', 1))  # default 1 per your case
     
+    offset = int(request.GET.get('offset', 0))
+    limit = int(request.GET.get('limit', 20))
 
-    if request.user.institute != -1:
-        try:
+    try:
+        if request.user.institute != -1:
             institute = proxy._get_institute(request.user.institute)
             department_ids = Department.objects.filter(institute=institute).values_list('id', flat=True)
             course_ids = Course.objects.filter(department__in=department_ids).values_list('id', flat=True)
 
-            admins = User.objects.filter(department__in=department_ids)
-            moderators = User.objects.filter(course__in=course_ids)
-            cache_key = f"{cache_key_base}_{offset}_{limit}"
-            rusers = cache.get(cache_key)
-            if rusers is None:
-                print("No cache for rusers slice")
-                rusers = list(User.objects.filter(role='user')[offset:offset + limit])
-                cache.set(cache_key, rusers, timeout=60 * 15)
-        
-        except Institute.DoesNotExist:
-            pass
+            # Elasticsearch queries for admins and moderators filtering by department and course ids
+            q_admins = Q('terms', department=list(department_ids))
+            q_mods = Q('terms', course=list(course_ids))
 
-    elif request.user.department != -1:
-        try:
+                # Fetch admins
+            admins_search = UserDocument.search().query(q_admins)[:100]  # adjust size as needed
+            admins = [hit.to_dict() for hit in admins_search]
+
+            # Fetch moderators
+            moderators_search = UserDocument.search().query(q_mods)[:100]
+            moderators = [hit.to_dict() for hit in moderators_search]
+
+        elif request.user.department != -1:
             department = Department.objects.get(id=request.user.department)
             course_ids = Course.objects.filter(department=department).values_list('id', flat=True)
 
-            moderators = User.objects.filter(course__in=course_ids)
-            cache_key = f"{cache_key_base}_{offset}_{limit}"
-            rusers = cache.get(cache_key)
-            if rusers is None:
-                print("No cache for rusers slice")
-                rusers = list(User.objects.filter(role='user')[offset:offset + limit])
-                cache.set(cache_key, rusers, timeout=60 * 15)
-        
+            q_mods = Q('terms', course=list(course_ids))
+            moderators_search = UserDocument.search().query(q_mods)[:100]
+            moderators = [hit.to_dict() for hit in moderators_search]
+
+    except (Institute.DoesNotExist, Department.DoesNotExist):
+        pass
+
+    # Compose Elasticsearch query to filter role='user'
+    q = Q('term', role='user')
+    
+    # Search query with pagination
+    cache_key = f"{cache_key_base}_{offset}_{limit}"
+    rusers = cache.get(cache_key)
+    if rusers is None:
+        # Run the Elasticsearch query
+        search = UserDocument.search().query(q)[offset:offset+limit]
+        rusers = []
+        for hit in search:
+            data = hit.to_dict()
+            data['id'] = hit.meta.id
+            rusers.append(data)
+        cache.set(cache_key, rusers, timeout=60 * 15)
+
+    isMaster = request.user.role == 'master'
+
+    instituteId = None
+    if request.user.department != -1:
+        try:
+            instituteId = Department.objects.get(id=request.user.department).institute.id
         except Department.DoesNotExist:
             pass
-    print()
-    print(rusers,limit,offset)
-    isMaster=request.user.role=='master'
-    if(request.user.institute!=-1):
-        instituteId=request.user.institute
-    if(request.user.department!=-1):
-        instituteId=Department.objects.get(id=request.user.department).institute.id
+    elif request.user.institute != -1:
+        instituteId = request.user.institute
+
     if request.headers.get('HX-Request'):
-        time.sleep(3)
         context = {
+            'rusers': rusers,
+            'offset': offset,
+            'limit': limit,
+        }
+        return render(request, 'partials/rusers_list.html', context)
+
+    context = {
+        'instituteId': instituteId,
+        'name': request.user.username,
         'rusers': rusers,
+        'admins': admins,
+        'moderators': moderators,
+        'isMaster': isMaster,
         'offset': offset,
         'limit': limit,
     }
-        
-       
-        return render(request, 'partials/rusers_list.html',context)
-    context = {
-    'instituteId': instituteId,
-    'name': request.user.username,
-    'rusers': rusers,
-    'admins': admins,
-    'moderators': moderators,
-    'isMaster': isMaster,
-    'offset': offset,
-    'limit': limit,
-}
 
     return render(request, "pages/appoint.html", context)
 
