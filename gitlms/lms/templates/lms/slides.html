@@ -78,7 +78,9 @@
           </svg>
           Update
         </button>
-         {% if (request.user.institute==ins_id) or (request.user.department==dept_id) or (request.user.course==course_id) %}
+        {% if request.user.institute == ins_id or request.user.department == dept_id or request.user.course == course_id %}
+
+
         <button
           onclick="window.location.href='#';"
           class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100 flex items-center"
@@ -99,7 +101,7 @@
           </svg>
           Delete
         </button>
-  {%endif%}
+        {%endif%}
       </div>
     </div>
   </div>
