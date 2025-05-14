@@ -53,7 +53,7 @@ class Faculty(ImageResizeMixin,models.Model):
 
 # Slide Model (Base)
 class Slide(models.Model):
-    uploaded_by=models.CharField(max_length=301,null=False)
+    uploaded_by=models.CharField(max_length=301,null=True)
     name = models.CharField(max_length=100)
     faculty = models.ForeignKey('Faculty', related_name='slides', on_delete=models.CASCADE, null=True, blank=True)
     content = models.FileField(upload_to=ContentUploadAdapter('slide').get_upload_strategy().get_upload_to)  # Adapter used for upload path
@@ -64,7 +64,7 @@ class Slide(models.Model):
 
 # Video Model (Base)
 class Video(models.Model):
-    uploaded_by=models.CharField(max_length=301,null=False)
+    uploaded_by=models.CharField(max_length=301,null=True)
     name = models.CharField(max_length=100)
     faculty = models.ForeignKey('Faculty', related_name='videos', on_delete=models.CASCADE, null=True, blank=True)
     content = models.FileField(upload_to=ContentUploadAdapter('video').get_upload_strategy().get_upload_to)  # Adapter used for upload path
@@ -75,7 +75,7 @@ class Video(models.Model):
 
 # Note Model (Base)
 class Note(models.Model):
-    uploaded_by=models.CharField(max_length=301,null=False)
+    uploaded_by=models.CharField(max_length=301,null=True)
     name = models.CharField(max_length=100)
     faculty = models.ForeignKey('Faculty', related_name='notes', on_delete=models.CASCADE, null=True, blank=True)
     content = models.FileField(upload_to=ContentUploadAdapter('note').get_upload_strategy().get_upload_to)  # Adapter used for upload path
@@ -86,7 +86,7 @@ class Note(models.Model):
 
 # Temporary Slide Model
 class temp_Slide(models.Model):
-    uploaded_by=models.CharField(max_length=301,null=False)
+    uploaded_by=models.CharField(max_length=301,null=True)
     name = models.CharField(max_length=100)
     faculty = models.ForeignKey('Faculty', related_name='temp_slides', on_delete=models.CASCADE, null=True, blank=True)
     real = models.ForeignKey(Slide, related_name='temp_versions', on_delete=models.CASCADE, null=True, blank=True)
@@ -98,7 +98,7 @@ class temp_Slide(models.Model):
 
 # Temporary Video Model
 class temp_Video(models.Model):
-    uploaded_by=models.CharField(max_length=301,null=False)
+    uploaded_by=models.CharField(max_length=301,null=True)
     name = models.CharField(max_length=100)
     faculty = models.ForeignKey('Faculty', related_name='temp_videos', on_delete=models.CASCADE, null=True, blank=True)
     real = models.ForeignKey(Video, related_name='temp_versions', on_delete=models.CASCADE, null=True, blank=True)
@@ -110,7 +110,7 @@ class temp_Video(models.Model):
 
 # Temporary Note Model
 class temp_Note(models.Model):
-    uploaded_by=models.CharField(max_length=301,null=False)
+    uploaded_by=models.CharField(max_length=301,null=True)
     name = models.CharField(max_length=100)
     faculty = models.ForeignKey('Faculty', related_name='temp_notes', on_delete=models.CASCADE, null=True, blank=True)
     real = models.ForeignKey(Note, related_name='temp_versions', on_delete=models.CASCADE, null=True, blank=True)
