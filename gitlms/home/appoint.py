@@ -1,5 +1,4 @@
 from django.http import JsonResponse
-from lms.models import Department, Course
 from accounts.models import User
 from django.shortcuts import redirect
 from django.http import JsonResponse
@@ -19,7 +18,7 @@ from .queryfuncs import *
 @csrf_exempt
 def appoint_user(request):
     # Check if the request is a POST
-    
+    proxy=QueryCacheProxy(request.user)
     if request.method == 'POST':
         try:
             # Parse the incoming JSON data
@@ -29,13 +28,19 @@ def appoint_user(request):
             department_id = data.get('department_id')  # Department ID for Admins
             course_id = data.get('course_id')  # Course ID for Moderators
             institute_id=data.get('institute_id')
-            print( request.user.institute," ",institute_id)
             if (request.user.institute!= int(institute_id))and (request.user.department!= int(department_id)):
-                print("Illegal")
                 return redirect('illegalactivity')
+            
             # Retrieve the user object from the database
             user = User.objects.get(id=user_id)
-            print(user_id,appoint_role,department_id ,course_id,institute_id)
+            institute = proxy._get_institute(int(institute_id))
+            department_ids,course_ids = get_department_and_course_ids(institute)
+            if user.institute!=-1:
+                return redirect('illegalactivity')
+            if (user.department!=-1) and (not user.department in department_ids):
+                return redirect('illegalactivity')
+            if(user.course!=-1)and (not user.course in course_ids):
+                return redirect('illegalactivity')
             # Handle role assignment
             if appoint_role == 'admin':
                 # Assign the user to a department for Admin role
