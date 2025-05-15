@@ -15,7 +15,8 @@ services:
       - ./certbot/www:/var/www/certbot
       - static_volume:/usr/share/nginx/html/static
       - media_volume:/usr/share/nginx/html/media
-      - ./ads.txt:/usr/share/nginx/html/ads.txt  # Mount ads.txt to HTML root
+      - ./ads.txt:/usr/share/nginx/html/ads.txt:ro
+
     networks:
       - app-network
 
