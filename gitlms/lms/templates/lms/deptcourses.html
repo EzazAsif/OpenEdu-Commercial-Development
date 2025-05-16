@@ -21,7 +21,7 @@
     {% if courses %} {% for course in courses %}
     <div
       class="card bg-white p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition duration-300 transform hover:scale-105 relative course-card"
-       data-name="{{ course.course_name|lower }} {{ department.course_code|lower }}"
+       data-name="{{ course.course_name|lower }} {{ course.course_code|lower }}"
     >
       <!-- Department Image and Word Cloud Banner -->
       <a
