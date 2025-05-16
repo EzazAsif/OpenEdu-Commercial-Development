@@ -22,3 +22,8 @@ admin.site.register(temp_Note)
 admin.site.register(Institute)
 
 
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    form = CourseForm
+
+

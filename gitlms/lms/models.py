@@ -5,6 +5,7 @@ from .contentUploadStratagy import *
 from .contentUploadAdapter import ContentUploadAdapter
 from django.contrib.auth.models import User  # Import the User model
 from accounts.imageResizer import ImageResizeMixin
+from django import forms
 
 class Institute(ImageResizeMixin,models.Model):
     id = models.AutoField(primary_key=True)  # Automatically generates a primary key
@@ -15,29 +16,53 @@ class Institute(ImageResizeMixin,models.Model):
         return self.name
 
 
-class Department(ImageResizeMixin,models.Model):
+class Department(ImageResizeMixin, models.Model):
     id = models.AutoField(primary_key=True)  # Automatically generates a primary key
-    name = models.CharField(max_length=255, unique=True)  # Unique name field
-    image = models.ImageField(upload_to='images/department/', null=True,default='images/department/default.jpg')  
-    description=models.TextField(max_length=1000,default="The Department fosters innovative research and interdisciplinary collaboration, focusing on conceptual exploration and advanced academic problem-solving techniques.")
-    institute = models.ForeignKey('Institute', related_name='departments', on_delete=models.CASCADE)  # Foreign key to Department
+    name = models.CharField(max_length=255)  # Removed unique=True
+    image = models.ImageField(upload_to='images/department/', null=True, default='images/department/default.jpg')
+    description = models.TextField(
+        max_length=1000,
+        default="The Department fosters innovative research and interdisciplinary collaboration, focusing on conceptual exploration and advanced academic problem-solving techniques."
+    )
+    institute = models.ForeignKey('Institute', related_name='departments', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('name', 'institute')  # Enforce combined uniqueness
+        # Or use the modern style:
+        # constraints = [
+        #     models.UniqueConstraint(fields=['name', 'institute'], name='unique_department_in_institute')
+        # ]
+
     def __str__(self):
         return self.name
 
 
-class Course(ImageResizeMixin,models.Model):
-    id = models.AutoField(primary_key=True)  # Automatically generates a primary key
-    course_code = models.CharField(max_length=10, unique=True)  # Unique course code
-    course_name = models.CharField(max_length=100)  # Course name
-    course_description = models.TextField(
-        max_length=1000,default="This course provides a comprehensive overview of essential topics, methodologies, and concepts. Further details will be provided."
-    )  # Description of the course
-    department = models.ForeignKey('Department', related_name='courses', on_delete=models.CASCADE)  # Foreign key to Department
-    
-    image = models.ImageField(upload_to='images/course/', null=True, default='images/course/default.jpg')  # Course image
 
+class Course(models.Model):
+    course_code = models.CharField(max_length=20)
+    course_name = models.CharField(max_length=255)
+    department = models.ForeignKey('Department', related_name='courses', on_delete=models.CASCADE)
+    
     def __str__(self):
         return self.course_name
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        institute = self.department.institute
+
+        # Check uniqueness of course_code + institute
+        if Course.objects.exclude(id=self.id).filter(course_code=self.course_code, department__institute=institute).exists():
+            raise ValidationError(f"Course code '{self.course_code}' already exists in this institute.")
+
+        # Check uniqueness of course_name + institute
+        if Course.objects.exclude(id=self.id).filter(course_name=self.course_name, department__institute=institute).exists():
+            raise ValidationError(f"Course name '{self.course_name}' already exists in this institute.")
+
+    def save(self, *args, **kwargs):
+        self.clean()  # Call clean manually before save
+        super().save(*args, **kwargs)
+
 
     
 class Faculty(ImageResizeMixin,models.Model):
@@ -119,3 +144,15 @@ class temp_Note(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+    def clean(self):
+        super().clean()
+        self.instance.clean()
