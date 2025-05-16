@@ -3,7 +3,9 @@ from .models import *
 # Register your models here.
 admin.site.register(Department)
 
-admin.site.register(Course)
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    form = CourseForm
 
 admin.site.register(Faculty)
 
@@ -22,8 +24,6 @@ admin.site.register(temp_Note)
 admin.site.register(Institute)
 
 
-@admin.register(Course)
-class CourseAdmin(admin.ModelAdmin):
-    form = CourseForm
+
 
 
