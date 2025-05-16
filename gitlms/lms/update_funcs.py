@@ -50,7 +50,7 @@ def update_course(request,ins_id,dept_id,course_id):
         course_name = request.POST.get('courseName')
         course_desc = request.POST.get('courseDescription')
         course_image = request.FILES.get('courseImage')
-    if((request.user.institute!=ins_id)or(request.user.department== dept_id)):
+    if((request.user.institute==ins_id)or(request.user.department== dept_id)):
         if course_code:
             course.course_code=course_code
         if course_name:
