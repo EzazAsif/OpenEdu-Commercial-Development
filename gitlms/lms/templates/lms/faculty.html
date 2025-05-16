@@ -4,7 +4,16 @@
     {{institute.name}} - {{ department.name }} -{{ course.course_name }} -
     Faculty Members
   </h2>
-
+  <!-- 🔍 Search Bar -->
+  <div class="mb-4">
+    <input
+      type="text"
+      id="facyltySearch"
+      placeholder="Search faculties..."
+      class="w-full p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+      onkeyup="filterFaculties()"
+    />
+  </div>
   <!-- Faculty Cards -->
   {% if faculties %}
   <div class="w-full overflow-x-auto">
@@ -13,7 +22,8 @@
     >
       {% for faculty in faculties %}
       <div
-        class="relative flex flex-col items-center justify-center bg-white p-6 rounded-full shadow-lg transform transition-transform hover:scale-105 cursor-pointer w-full max-w-xs aspect-square"
+        class="relative flex flex-col items-center justify-center bg-white p-6 rounded-full shadow-lg transform transition-transform hover:scale-105 cursor-pointer w-full max-w-xs aspect-square faculty-card"
+       data-name="{{ faculty.name|lower }} "
       >
         {% if showUpdateFacultyModal %}
         <!-- Three-dot menu -->
@@ -132,5 +142,21 @@
 
 <!-- JavaScript for Menu Toggle -->
 <script src="{% static 'js/cardDropDown.js' %}"></script>
+
+<script>
+  function filterFaculties() {
+    const input = document.getElementById("facyltySearch").value.toLowerCase();
+    const cards = document.querySelectorAll(".faculty");
+
+    cards.forEach((card) => {
+      const name = card.getAttribute("data-name");
+      if (name.includes(input)) {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  }
+</script>
 
 {% endblock %}
