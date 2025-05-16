@@ -39,10 +39,15 @@ class Department(ImageResizeMixin, models.Model):
 
 
 class Course(models.Model):
+    id = models.AutoField(primary_key=True)  # Automatically generates a primary key
     course_code = models.CharField(max_length=20)
     course_name = models.CharField(max_length=255)
     department = models.ForeignKey('Department', related_name='courses', on_delete=models.CASCADE)
-    
+    course_description = models.TextField(
+        max_length=1000,default="This course provides a comprehensive overview of essential topics, methodologies, and concepts. Further details will be provided."
+    )  # Description of the course
+    image = models.ImageField(upload_to='images/course/', null=True, default='images/course/default.jpg')  # Course image
+
     def __str__(self):
         return self.course_name
 
