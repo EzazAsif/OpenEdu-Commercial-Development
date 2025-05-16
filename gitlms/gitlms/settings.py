@@ -168,7 +168,7 @@ TIME_ZONE = 'Asia/Dhaka'
 USE_I18N = True
 
 USE_TZ = True
-SITE_ID = 2  # This is a default value for the first site.
+SITE_ID = 3  # This is a default value for the first site.
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
