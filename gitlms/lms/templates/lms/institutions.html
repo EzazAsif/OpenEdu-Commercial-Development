@@ -3,6 +3,16 @@
   <h2 class="text-2xl font-bold text-blue-900 mb-6">
     Enlisted Educational Institutions
   </h2>
+<!-- 🔍 Search Bar -->
+  <div class="mb-4">
+    <input
+      type="text"
+      id="instituteSearch"
+      placeholder="Search institutes..."
+      class="w-full p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+      onkeyup="filterInstitute()"
+    />
+  
   <!-- Institution Cards -->
   {% if institutes %}
   <div class="w-full overflow-x-auto">
@@ -11,7 +21,8 @@
     >
       {% for institute in institutes %}
       <div
-        class="relative flex flex-col items-center justify-center bg-white p-6 rounded-full shadow-lg transform transition-transform hover:scale-105 cursor-pointer w-full max-w-xs aspect-square"
+        class="relative flex flex-col items-center justify-center bg-white p-6 rounded-full shadow-lg transform transition-transform hover:scale-105 cursor-pointer w-full max-w-xs aspect-square institute-card"
+       data-name="{{ institute.name|lower }} "
       >
         {% if showUpdateInstitutionModal %}
         <!-- Three-dot menu for institution -->
@@ -123,5 +134,21 @@
 
 <!-- JavaScript for Menu Toggle -->
 <script src="{% static 'js/cardDropDown.js' %}"></script>
+
+  <script>
+  function filterInstitute() {
+    const input = document.getElementById("instituteSearch").value.toLowerCase();
+    const cards = document.querySelectorAll(".institute-card");
+
+    cards.forEach((card) => {
+       const name = card.getAttribute("data-name").toLowerCase();
+    if (name.includes(input)) {
+      card.classList.remove("hidden");
+    } else {
+      card.classList.add("hidden");
+    }
+    });
+  }
+</script>
 
 {% endblock %}
