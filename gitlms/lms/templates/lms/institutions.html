@@ -22,7 +22,7 @@
       {% for institute in institutes %}
       <div
         class="relative flex flex-col items-center justify-center bg-white p-6 rounded-full shadow-lg transform transition-transform hover:scale-105 cursor-pointer w-full max-w-xs aspect-square institute-card"
-       data-name="{{ institute.name|lower }} "
+       data-name="{{ institute.name|lower }}"
       >
         {% if showUpdateInstitutionModal %}
         <!-- Three-dot menu for institution -->
@@ -31,7 +31,7 @@
         >
           <button
             class="text-gray-600 hover:text-gray-800 focus:outline-none"
-            onclick="toggleMenu('menu-institution-{{ institution.id }}')"
+            onclick="toggleMenu('menu-institution-{{ institute.id }}')"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
