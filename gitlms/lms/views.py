@@ -9,6 +9,9 @@ from .queryProxy import QueryCacheProxy
 
 @login_required
 def institutes(request):
+    user=request.user
+    if not user.has_usable_password() or not all([user.username, user.first_name, user.last_name]):
+        return redirect('completesignup')
     institutes_proxy = QueryCacheProxy(request.user)
     institutes = institutes_proxy.get_institutes()  # Fetch departments via the proxy
     # Determine the visibility of the modal and button based on the user's role
