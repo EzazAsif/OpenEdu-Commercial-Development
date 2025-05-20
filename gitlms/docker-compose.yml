@@ -42,6 +42,7 @@ services:
       - redis
       - db
       - elasticsearch
+      - qdrant # ✅ Add this line
     environment:
       - DJANGO_SETTINGS_MODULE=gitlms.settings
       - REDIS_URL=redis://redis:6379/1
@@ -119,12 +120,22 @@ services:
       - esdata:/usr/share/elasticsearch/data
     networks:
       - app-network
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
   static_volume:
   media_volume:
   esdata:
+  qdrant_data:
 
 networks:
   app-network:
