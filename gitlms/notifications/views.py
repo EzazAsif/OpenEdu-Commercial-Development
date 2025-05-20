@@ -4,8 +4,6 @@ from lms.models import *
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from lms.queryProxy import QueryCacheProxy
-from myRag.qdrant_helper import push_to_qdrant
-
 # Create your views here.
 @login_required
 def notifications(request):
@@ -109,11 +107,10 @@ def approve_not(request, not_id):
                 content=temp_content.content,  # Using content from the temporary content
                 uploaded_by=temp_content.uploaded_by
             )
-            push_to_qdrant( real_content.content, real_content.name,real_content.content.url , "slide")
+
             # Set the real_content_id in the notification
             notification.real_content_id = real_content.id
             notification.save()
-            
             # Delete the temporary content instance after approval
             temp_content.delete()
             contenDeleteProxy(real_content.faculty.course.department.institute.id,real_content.faculty.course.department.id,real_content.faculty.course.id,real_content.faculty.id)
@@ -133,8 +130,7 @@ def approve_not(request, not_id):
             if temp_content.uploaded_by:
                 content.uploaded_by = temp_content.uploaded_by
             content.save()  # Save the updated real content to the database
-            if temp_content.content:
-                push_to_qdrant( content.content, content.name,content.content.url , "slide")
+
             # Set the real_content_id to the updated content ID
             notification.real_content_id = content.id
             notification.save()
