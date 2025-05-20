@@ -40,16 +40,15 @@ def extract_pdf_text(uploaded_file, chunk_size=500, overlap=100):
     return chunks
 
 
-def push_to_qdrant(file, title, uploader, faculty, doc_type):
+def push_to_qdrant(file, title, url, doc_type):
     chunks = extract_pdf_text(file)  # returns list of 500-word chunks
 
     for idx, chunk in enumerate(chunks):
         metadata = {
             "type": doc_type,
             "title": title,
-            "uploaded_by": uploader,
-            "faculty": faculty,
             "chunk_index": idx,
+            "url":url,
             "content": chunk
         }
         add_to_qdrant("lecture_materials", chunk, metadata)  # ✅ one string per call
