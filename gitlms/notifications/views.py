@@ -4,7 +4,7 @@ from lms.models import *
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from lms.queryProxy import QueryCacheProxy
-from myRag.qdrant_helper import add_to_qdrant,push_to_qdrant
+from myRag.qdrant_helper import push_to_qdrant
 
 # Create your views here.
 @login_required
@@ -133,7 +133,8 @@ def approve_not(request, not_id):
             if temp_content.uploaded_by:
                 content.uploaded_by = temp_content.uploaded_by
             content.save()  # Save the updated real content to the database
-            push_to_qdrant( content.content, content.name,content.content.url , "slide")
+            if temp_content.content:
+                push_to_qdrant( content.content, content.name,content.content.url , "slide")
             # Set the real_content_id to the updated content ID
             notification.real_content_id = content.id
             notification.save()
