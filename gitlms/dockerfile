@@ -16,8 +16,8 @@ COPY . /app/
 
 
 # ✅ Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt \
-    && echo "✔ Python dependencies installed"
+RUN bash -c "pip install --no-cache-dir -r requirements.txt & \
+             pid=\$!; while kill -0 \$pid 2>/dev/null; do echo '.'; sleep 15; done; wait \$pid"
 
 # ✅ Expose necessary ports
 EXPOSE 8000 8001
