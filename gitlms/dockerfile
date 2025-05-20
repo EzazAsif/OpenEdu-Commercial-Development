@@ -16,7 +16,7 @@ COPY . /app/
 
 
 # ✅ Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --progress-bar off -r requirements.txt
 
 # ✅ Expose necessary ports
 EXPOSE 8000 8001
