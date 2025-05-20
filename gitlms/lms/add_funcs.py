@@ -9,6 +9,8 @@ from django.db.models import Q
 from .contentFactory import *
 from django.contrib.auth.decorators import login_required
 from .queryProxy import QueryCacheProxy
+from myRag.qdrant_helper import add_to_qdrant,push_to_qdrant
+
 
 messageObserver=MessageObserver()
 subject=Subject()
@@ -94,6 +96,9 @@ def add_slide(request,ins_id, dept_id, course_id, fac_id):
         slide_content = request.FILES.get('slideContent')
         if (request.user.institute==ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             SlideFactory.create_content(faculty, slide_name, slide_content,uploaded_by=f'{request.user.first_name} {request.user.first_name}')
+            # Read file content
+            push_to_qdrant(slide_content, slide_name, f"{request.user.first_name} {request.user.last_name}", faculty.name, "slide")
+
             proxy=QueryCacheProxy(request.user)
             proxy.delete_LecSlides_cache(ins_id, dept_id, course_id, fac_id)
             subject.notify(request, "Slide has been added")
@@ -121,6 +126,11 @@ def add_note(request,ins_id, dept_id, course_id, fac_id):
         note_content = request.FILES.get('noteContent')
         if (request.user.institute==ins_id) or (request.user.department == dept_id) or (request.user.course == course_id):
             NoteFactory.create_content( faculty, note_name, note_content,uploaded_by=f'{request.user.first_name} {request.user.first_name}')
+
+            # Read file content
+            push_to_qdrant(note_content, note_name, f"{request.user.first_name} {request.user.last_name}", faculty.name, "note")
+
+
             proxy=QueryCacheProxy(request.user)
             proxy.delete_LecNotes_cache(ins_id, dept_id, course_id, fac_id)
             subject.notify(request, "Note has been added")
