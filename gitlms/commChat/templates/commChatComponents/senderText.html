@@ -1,29 +1,40 @@
-<div class="flex items-start relative m-9 z-10">
+<div class="flex items-start relative px-6 py-3">
   <div class="relative">
     <img
       src="{{chatmessage.sender.profilepicture}}"
       alt="Sender Avatar"
-      class="h-12 w-12 rounded-full border-2 border-blue-500 cursor-pointer sender-avatar"
-      onclick="toggleOptions('options-1')"
+      class="h-10 w-10 rounded-full border-2 border-yellow-400 cursor-pointer shadow sender-avatar"
+      onclick="toggleOptions('options-{{chatmessage.id}}')"
     />
     <!-- Options menu for sender -->
-    <div id="options-1" class="options-menu absolute left-0 top-12">
-      <button class="text-gray-700 hover:text-blue-500">View Profile</button>
-      <button class="text-gray-700 hover:text-blue-500">Block User</button>
-      <button class="text-gray-700 hover:text-blue-500">
+    <div
+      id="options-{{chatmessage.id}}"
+      class="hidden absolute left-0 top-12 bg-white shadow-lg rounded-lg p-2 w-36 z-20"
+    >
+      <button class="w-full text-left text-gray-700 hover:text-yellow-500 py-1">
+        View Profile
+      </button>
+      <button class="w-full text-left text-gray-700 hover:text-yellow-500 py-1">
+        Block User
+      </button>
+      <button class="w-full text-left text-gray-700 hover:text-yellow-500 py-1">
         Mute Notifications
       </button>
     </div>
   </div>
-  <div class="ml-4 flex flex-col">
-    <div class="flex items-center space-x-2">
-      <span class="text-lg font-semibold text-gray-800"
-        >{{chatmessage.sender.name}}</span
-      >
+
+  <div class="ml-3 flex flex-col max-w-sm">
+    <div class="flex items-center space-x-2 mb-1">
+      <span class="text-sm font-medium text-gray-700">
+        {{chatmessage.sender.name}}
+      </span>
       <span class="text-xs text-gray-400">{{chatmessage.timestamp}}</span>
     </div>
-    <p class="text-sm text-gray-600 mt-1 leading-relaxed">
+    <div
+      class="bg-yellow-100 text-yellow-900 text-sm px-3 py-1.5 rounded-2xl rounded-tl-none shadow break-words whitespace-pre-wrap leading-tight min-h-[1.5rem]"
+      style="word-break: break-all"
+    >
       {{chatmessage.message}}
-    </p>
+    </div>
   </div>
 </div>
