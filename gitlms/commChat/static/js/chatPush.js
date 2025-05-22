@@ -23,9 +23,9 @@ CommChatSocket.onmessage = function (e) {
 
     const isCurrentUser = data.sender.id == currentUserId;
 
-    const messageHtml = isCurrentUser
+   const messageHtml = isCurrentUser
   ? `
-  <div class="flex items-end justify-end px-4 py-2 m-9">
+  <div class="flex items-end justify-end px-4 py-2">
     <div class="flex flex-col items-end max-w-[80%] space-y-1">
       <div class="flex items-center justify-end space-x-2 text-xs text-gray-500">
         <span>${formatTime(data.timestamp)}</span>
@@ -44,9 +44,9 @@ CommChatSocket.onmessage = function (e) {
       class="h-6 w-6 ml-2 rounded-full border border-green-400"
     />
   </div>
-`
+  `
   : `
-  <div class="flex items-start relative px-6 py-3 m-9">
+  <div class="flex items-start relative px-6 py-3">
     <div class="relative">
       <img
         src="${data.sender.profilepicture}"
@@ -63,7 +63,6 @@ CommChatSocket.onmessage = function (e) {
         <button class="w-full text-left text-gray-700 hover:text-yellow-500 py-1">Mute Notifications</button>
       </div>
     </div>
-
     <div class="ml-3 flex flex-col max-w-sm">
       <div class="flex items-center space-x-2 mb-1">
         <span class="text-sm font-medium text-gray-700">${data.sender.name}</span>
@@ -77,7 +76,8 @@ CommChatSocket.onmessage = function (e) {
       </div>
     </div>
   </div>
-`;
+  `;
+
 
 
     chatContainer.innerHTML += messageHtml;
