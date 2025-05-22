@@ -30,6 +30,8 @@ urlpatterns = [
     path('chat/', include('commChat.urls')),
     path('classroom/', include('videomeet.urls')),
     path('auth/', include('allauth.urls')),  # This includes allauth URLs under '/auth/'
+    path('tutorai/', include('myRag.urls')),  # This includes allauth URLs under '/auth/'
+    
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

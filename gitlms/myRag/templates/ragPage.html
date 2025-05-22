@@ -1,0 +1,21 @@
+{% extends 'dashboard.html' %} {% load static %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/ragPage.css' %}" />
+
+<!-- Start Chat Section -->
+<div
+  class="chatbox-container bg-white shadow-2xl w-full h-[calc(100vh-100px)] flex flex-col"
+>
+  <!-- Header for the chat -->
+  {% include 'inc/aiheader.html' %}
+
+  <!-- Chat area -->
+  {% include 'inc/chatArea.html' %}
+
+  <!-- Input bar -->
+  {% include 'inc/inputbar.html' %}
+  <!-- End Chat Section -->
+
+  <script src="{% static 'js/ragPage.js' %}"></script>
+
+  {% endblock %}
+</div>

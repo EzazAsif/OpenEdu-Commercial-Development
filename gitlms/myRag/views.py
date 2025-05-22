@@ -17,3 +17,7 @@ def semantic_search(request):
         for r in results
     ]
     return JsonResponse({"results": formatted})
+
+
+def ragPage(request):
+    return render(request,'ragPage.html')

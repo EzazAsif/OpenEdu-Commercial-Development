@@ -1,0 +1,25 @@
+.break-all-text {
+  word-break: break-word;
+}
+
+.chatbox-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Full height of the content */
+  width: 100%; /* Full width of the content */
+  justify-content: center; /* Center horizontally */
+}
+
+/* Chat header (fixed height) */
+.chat-header {
+  padding: 16px;
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h-screen-minus-header {
+  height: calc(100vh - 100px);
+}

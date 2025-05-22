@@ -5,7 +5,7 @@ import uuid
 import fitz  # PyMuPDF
 
 client = QdrantClient(host="qdrant", port=6333)  # or URL if cloud
-model = SentenceTransformer('all-MiniLM-L6-v2')
+#model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 
