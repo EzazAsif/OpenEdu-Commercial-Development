@@ -1,20 +1,21 @@
-<div class="flex items-start justify-end m-9 z-10">
-  <div class="ml-4 flex flex-col items-end">
-    <div class="flex items-center space-x-2 mr-2">
-      <span class="text-lg font-semibold text-gray-800"
-        >{{request.user.first_name}} {{request.user.last_name}}</span
+<div class="flex items-end justify-end px-4 py-2">
+  <div class="flex flex-col items-end max-w-[80%] space-y-1">
+    <div class="flex items-center justify-end space-x-2 text-xs text-gray-500">
+      <span>{{ chatmessage.timestamp }}</span>
+      <span class="font-medium text-gray-600"
+        >{{ request.user.first_name }} {{ request.user.last_name }}</span
       >
-      <span class="text-xs text-gray-400">10:31 AM </span>
     </div>
-    <p class="text-sm text-blue-600 mt-1 leading-relaxed">
-      {{chatmessage.message}}
-    </p>
+    <div
+      class="bg-[#DCF8C6] text-gray-900 px-3 py-1.5 rounded-[18px] rounded-br-sm shadow-sm text-sm leading-tight whitespace-pre-wrap break-words inline-block"
+      style="word-break: break-all"
+    >
+      {{ chatmessage.message }}
+    </div>
   </div>
-  <div class="flex-shrink-0">
-    <img
-      src="{{request.user.profilepicture.url}}"
-      alt="Receiver Avatar"
-      class="h-12 w-12 rounded-full border-2 border-blue-500"
-    />
-  </div>
+  <img
+    src="{{ request.user.profilepicture.url }}"
+    alt="Receiver Avatar"
+    class="h-6 w-6 ml-2 rounded-full border border-green-400"
+  />
 </div>
