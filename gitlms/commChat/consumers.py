@@ -54,6 +54,7 @@ class CommChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         print("Group message event:", event)
         await self.send(text_data=json.dumps({
+            'id':event['id'],
             'message': event['message'],
             'sender': event['sender'],
             'timestamp': event['timestamp'],
