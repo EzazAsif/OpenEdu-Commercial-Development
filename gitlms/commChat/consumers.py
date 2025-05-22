@@ -45,6 +45,7 @@ class CommChatConsumer(AsyncWebsocketConsumer):
             self.group_name,
             {
                 'type': 'chat_message',
+                'id':unique_id,
                 'message': message,
                 'sender': sender,
                 'timestamp': timestamp,
@@ -54,7 +55,7 @@ class CommChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         print("Group message event:", event)
         await self.send(text_data=json.dumps({
-            'id':event['id'],
+            'id': event['id'],  # get it from the event dict
             'message': event['message'],
             'sender': event['sender'],
             'timestamp': event['timestamp'],
