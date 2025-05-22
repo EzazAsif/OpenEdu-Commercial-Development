@@ -32,7 +32,6 @@ function sendMessage(event) {
   };
   // Construct the payload
   const payload = {
-    id: Date.now().toString(), // unique id based on timestamp
     type: "chat_message",
     sender: CurrentUser,
     message: message,
