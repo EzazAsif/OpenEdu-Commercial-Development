@@ -23,3 +23,4 @@ django-cors-headers==4.7.0
 qdrant-client==1.14.2
 sentence-transformers==4.1.0
 PyMuPDF==1.25.5
+groq==0.25.0

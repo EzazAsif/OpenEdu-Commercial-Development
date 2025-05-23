@@ -1,3 +1,25 @@
-<header class="chat-header p-4 bg-gray-100 shadow text-lg font-semibold">
-  TutorAI Chat
+<header
+  class="chat-header p-4 bg-white shadow flex items-center justify-between"
+>
+  <h1 class="text-xl font-semibold text-gray-800">TutorAI Chat</h1>
+  <button
+    onclick="localStorage.removeItem('cachedChat'); location.reload();"
+    class="flex items-center gap-2 px-3 py-1.5 bg-red-500 text-white text-sm rounded-lg shadow hover:bg-red-600 transition-all duration-200"
+  >
+    <svg
+      class="w-4 h-4"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M6 18L18 6M6 6l12 12"
+      ></path>
+    </svg>
+    Clear Chat
+  </button>
 </header>

@@ -42,12 +42,32 @@ function sendMessage() {
   // If there's text, add user text bubble
   if (msg) {
     const escapedMsg = escapeHTML(msg);
-    const userBubble = `
-      <div class="flex items-start justify-end space-x-2">
-        <div class="bg-blue-100 rounded-2xl px-4 py-2 text-sm max-w-xl shadow break-all-text">${escapedMsg}</div>
-        <div class="h-10 w-10 rounded-full bg-blue-400 flex-shrink-0"></div>
-      </div>`;
-    chat.innerHTML += userBubble;
+    const userBubble = document.createElement("div");
+    userBubble.className = "flex items-start justify-end space-x-2";
+
+    // Create the message bubble
+    const messageDiv = document.createElement("div");
+    messageDiv.className =
+      "bg-blue-100 rounded-2xl px-4 py-2 text-sm max-w-xl shadow break-all-text";
+    messageDiv.textContent = escapedMsg;
+
+    // Create the avatar container
+    const avatar = document.createElement("div");
+    avatar.className =
+      "h-10 w-10 rounded-full bg-blue-400 flex-shrink-0 overflow-hidden";
+
+    // Create the user image
+    const userImg = document.createElement("img");
+    userImg.src = requestuserpicture;
+    userImg.alt = "User avatar";
+    userImg.className = "h-full w-full object-cover";
+
+    // Append image to avatar, then all to userBubble
+    avatar.appendChild(userImg);
+    userBubble.appendChild(messageDiv);
+    userBubble.appendChild(avatar);
+
+    document.querySelector("#chat-area").appendChild(userBubble);
 
     // Send the message to the WebSocket
     if (tutorAiSocket.readyState === WebSocket.OPEN) {
@@ -89,16 +109,6 @@ function sendMessage() {
       chat.scrollTop = chat.scrollHeight;
     };
     reader.readAsDataURL(file);
-  } else {
-    // AI reply after text message only
-    const aiBubble = `
-      <div class="flex items-start space-x-2">
-        <div class="h-10 w-10 rounded-full bg-gray-300 flex-shrink-0"></div>
-        <div class="bg-gray-100 rounded-2xl px-4 py-2 text-sm max-w-xl shadow break-all-text">That's a great question!</div>
-      </div>`;
-    chat.innerHTML += aiBubble;
-
-    chat.scrollTop = chat.scrollHeight;
   }
 
   // Clear inputs
@@ -118,5 +128,87 @@ input.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
+  }
+});
+
+tutorAiSocket.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  const parser = new DOMParser();
+  const safeHtml = data.message.replace(/\n/g, "<br>");
+  const doc = parser.parseFromString(safeHtml, "text/html");
+
+  if (data.type === "answer") {
+    const aiMessageWrapper = document.createElement("div");
+    aiMessageWrapper.className = "flex items-start space-x-2";
+
+    const avatar = document.createElement("div");
+    avatar.className =
+      "h-10 w-10 rounded-full bg-gray-300 flex-shrink-0 overflow-hidden";
+
+    const textContainer = document.createElement("div");
+    textContainer.className =
+      "bg-gray-100 rounded-2xl px-4 py-2 text-sm max-w-xl shadow break-words";
+
+    aiMessageWrapper.appendChild(avatar);
+    aiMessageWrapper.appendChild(textContainer);
+    chat.appendChild(aiMessageWrapper);
+    chat.scrollTop = chat.scrollHeight;
+
+    const nodes = [...doc.body.childNodes];
+    let nodeIndex = 0;
+    let wordIndex = 0;
+    let currentTextWords = [];
+    let textNode = null;
+
+    function typeNext() {
+      if (nodeIndex >= nodes.length) {
+        // ✅ Save chat to localStorage after each full message
+        localStorage.setItem("cachedChat", chat.innerHTML);
+        return;
+      }
+
+      const node = nodes[nodeIndex];
+
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (currentTextWords.length === 0) {
+          currentTextWords = node.textContent.split(/\s+/);
+          wordIndex = 0;
+          textNode = document.createTextNode("");
+          textContainer.appendChild(textNode);
+        }
+
+        if (wordIndex < currentTextWords.length) {
+          textNode.textContent += currentTextWords[wordIndex] + " ";
+          chat.scrollTop = chat.scrollHeight;
+          wordIndex++;
+          setTimeout(typeNext, 200);
+        } else {
+          currentTextWords = [];
+          nodeIndex++;
+          setTimeout(typeNext, 200);
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        textContainer.appendChild(node.cloneNode(true));
+        chat.scrollTop = chat.scrollHeight;
+        nodeIndex++;
+        setTimeout(typeNext, 200);
+      } else {
+        nodeIndex++;
+        setTimeout(typeNext, 200);
+      }
+    }
+
+    typeNext();
+  } else if (data.type === "error") {
+    console.error("Error:", data.message);
+  }
+};
+
+// Load cached chat HTML on page load
+document.addEventListener("DOMContentLoaded", () => {
+  const cachedChat = localStorage.getItem("cachedChat");
+  if (cachedChat && chat) {
+    chat.innerHTML = cachedChat;
+    chat.scrollTop = chat.scrollHeight;
   }
 });

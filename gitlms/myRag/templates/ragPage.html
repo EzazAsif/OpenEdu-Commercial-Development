@@ -1,21 +1,27 @@
 {% extends 'dashboard.html' %} {% load static %} {% block content %}
 <link rel="stylesheet" href="{% static 'css/ragPage.css' %}" />
 
-<!-- Start Chat Section -->
 <div
   class="chatbox-container bg-white shadow-2xl w-full h-[calc(100vh-100px)] flex flex-col"
 >
-  <!-- Header for the chat -->
-  {% include 'inc/aiheader.html' %}
+  <!-- Sticky Header -->
+  <div class="sticky top-0 bg-white border-b z-20">
+    {% include 'inc/aiheader.html' %}
+  </div>
 
-  <!-- Chat area -->
-  {% include 'inc/chatArea.html' %}
+  <!-- Scrollable Chat Area -->
+  <div id="chat-area-container" class="flex-1 overflow-y-auto px-4 py-2">
+    {% include 'inc/chatArea.html' %}
+  </div>
 
-  <!-- Input bar -->
-  {% include 'inc/inputbar.html' %}
-  <!-- End Chat Section -->
-
-  <script src="{% static 'js/ragPage.js' %}"></script>
-
-  {% endblock %}
+  <!-- Sticky Input Bar -->
+  <div class="sticky bottom-0 bg-white border-t z-20 px-4 py-2">
+    {% include 'inc/inputbar.html' %}
+  </div>
 </div>
+
+<script>
+  const requestuserpicture = "{{request.user.profilepicture.url}}";
+</script>
+<script src="{% static 'js/ragPage.js' %}"></script>
+{% endblock %}

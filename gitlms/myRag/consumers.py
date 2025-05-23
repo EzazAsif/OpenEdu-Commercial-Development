@@ -1,8 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
 import json
-import uuid
-from .qdrant_helper import search_qdrant
 from .groq import answer_with_groq_using_qdrant_context
 # Make sure your `model` and `client` are imported or initialized here
 # from yourmodule import model, client
@@ -31,17 +29,13 @@ class RagConsumer(AsyncWebsocketConsumer):
                 message = data.get("message")
                 print(f"Received text message: {message}")
 
-                # Call Qdrant search function
-                results = search_qdrant(collection_name="lecture_materials", query=message, top_k=5)
-                print("Qdrant search results:")
-                for result in results:
-                    print(result)
-
-                # Send response back to user
+                answer = await answer_with_groq_using_qdrant_context(query=message)
+                
+                # Send the response back on the same WebSocket channel
                 await self.send(text_data=json.dumps({
-                    "type": "text",
-                    "response": f"Search completed. Found {len(results)} results."
-                }))
+                "type": "answer",
+                "message": answer
+            }))
 
             elif msg_type == "image":
                 image_data_url = data.get("dataURL")

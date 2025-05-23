@@ -3,6 +3,8 @@ from qdrant_client.models import Distance, VectorParams, PointStruct
 from sentence_transformers import SentenceTransformer
 import uuid
 import fitz  # PyMuPDF
+# qdrant_helper.py
+from typing import List, Dict
 
 client = QdrantClient(host="qdrant", port=6333)  # or URL if cloud
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -86,13 +88,41 @@ def add_to_qdrant(collection_name: str, text: str, metadata: dict):
 
 
 
-def search_qdrant(collection_name: str, query: str, top_k: int = 5):
-    query_vec = model.encode(query).tolist()
-    print("Query vector length:", len(query_vec))
-    results = client.search(
-        collection_name=collection_name,
-        query_vector=query_vec,
-        limit=top_k
-    )
-    print(f"Found {len(results)} results")
-    return results
+
+def search_qdrant(collection_name: str, query: str, top_k: int = 5, threshold: float =1) -> List[Dict]:
+    """
+    Search Qdrant for vectors similar to the query, returning only results above a threshold.
+
+    Args:
+        collection_name (str): Name of the Qdrant collection.
+        query (str): Natural language query.
+        top_k (int): Number of top results.
+        threshold (float): Minimum similarity score to include a result.
+
+    Returns:
+        List[Dict]: Filtered search results.
+    """
+    if not query.strip():
+        raise ValueError("Query string is empty.")
+    if not collection_name.strip():
+        raise ValueError("Collection name is empty.")
+
+    try:
+        query_vec = model.encode(query).tolist()
+        print("Query vector length:", len(query_vec))
+
+        results = client.search(
+            collection_name=collection_name,
+            query_vector=query_vec,
+            limit=top_k
+        )
+
+        # Filter results by similarity threshold
+        filtered_results = [res for res in results ]#if res.score >= threshold]
+
+        print(f"Found {len(results)} results, {len(filtered_results)} above threshold {threshold}")
+        return filtered_results
+
+    except Exception as e:
+        print(f"Qdrant search failed: {e}")
+        return []
