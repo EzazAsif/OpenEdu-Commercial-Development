@@ -5,7 +5,7 @@ import uuid
 import fitz  # PyMuPDF
 
 client = QdrantClient(host="qdrant", port=6333)  # or URL if cloud
-#model = SentenceTransformer('all-MiniLM-L6-v2')
+model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 
@@ -64,13 +64,12 @@ def create_collection(collection_name: str):
         
 
 def add_to_qdrant(collection_name: str, text: str, metadata: dict):
-    create_collection(collection_name)
-
-    # Ensure input is a single string
-    if not isinstance(text, str):
-        raise ValueError("Each input to add_to_qdrant must be a single string (chunk).")
+    # Create collection if not exists (do this once outside the loop ideally)
+    if not client.collection_exists(collection_name):
+        create_collection(collection_name)
 
     embedding = model.encode(text).tolist()
+    print(f"Embedding type: {type(embedding)}, length: {len(embedding)}")  # debug
 
     if not isinstance(embedding, list) or not all(isinstance(x, float) for x in embedding):
         raise ValueError("Generated embedding is invalid or not a 1D list of floats.")
@@ -80,6 +79,7 @@ def add_to_qdrant(collection_name: str, text: str, metadata: dict):
         vector=embedding,
         payload=metadata
     )
+    print(f"Upserting point id={point.id} with vector length {len(point.vector)}")  # debug
     client.upsert(collection_name=collection_name, points=[point])
 
 
@@ -88,10 +88,11 @@ def add_to_qdrant(collection_name: str, text: str, metadata: dict):
 
 def search_qdrant(collection_name: str, query: str, top_k: int = 5):
     query_vec = model.encode(query).tolist()
+    print("Query vector length:", len(query_vec))
     results = client.search(
         collection_name=collection_name,
         query_vector=query_vec,
         limit=top_k
     )
+    print(f"Found {len(results)} results")
     return results
-

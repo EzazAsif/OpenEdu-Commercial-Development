@@ -2,60 +2,64 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
 import json
 import uuid
+from .qdrant_helper import search_qdrant
+from .groq import answer_with_groq_using_qdrant_context
+# Make sure your `model` and `client` are imported or initialized here
+# from yourmodule import model, client
 
 class RagConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.ins_id = self.scope['url_route']['kwargs']['ins_id']
-        self.group_name = f"chat_{self.ins_id}"
-
-        # Join room group
-        await self.channel_layer.group_add(
-            self.group_name,
-            self.channel_name
-        )
-        await self.accept()
-
-    async def disconnect(self, close_code):
-        # Leave room group
-        await self.channel_layer.group_discard(
-            self.group_name,
-            self.channel_name
-        )
+        try:
+            self.user_id = self.scope['user'].id
+            self.room_group_name = f"tutorai_{self.user_id}"
+            await self.channel_layer.group_add(
+                self.room_group_name,
+                self.channel_name
+            )
+            await self.accept()
+            print(f"User {self.user_id} connected to {self.room_group_name}")
+        except Exception as e:
+            print("Connection error:", e)
+            await self.close()
 
     async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json.get('message', '')
-        sender = text_data_json.get('sender', '')
-        timestamp = text_data_json.get('timestamp', '')
+        try:
+            data = json.loads(text_data)
+            msg_type = data.get("type")
 
-        # ✅ Cache each message with its own expiry
-        unique_id = uuid.uuid4().hex
-        message_key = f"{self.group_name}:{unique_id}"  # e.g., chat_123:abc123
+            if msg_type == "text":
+                message = data.get("message")
+                print(f"Received text message: {message}")
 
-        cache.set(message_key, text_data, timeout=3600)  # 1 hour expiry
+                # Call Qdrant search function
+                results = search_qdrant(collection_name="lecture_materials", query=message, top_k=5)
+                print("Qdrant search results:")
+                for result in results:
+                    print(result)
 
-        # ✅ Maintain an index of all message keys for the group
-        index_key = f"{self.group_name}:index"
-        existing_keys = cache.get(index_key, [])
-        existing_keys.append(message_key)
-        cache.set(index_key, existing_keys, timeout=3600)
+                # Send response back to user
+                await self.send(text_data=json.dumps({
+                    "type": "text",
+                    "response": f"Search completed. Found {len(results)} results."
+                }))
 
-        # Broadcast message to group
-        await self.channel_layer.group_send(
-            self.group_name,
-            {
-                'type': 'chat_message',
-                'message': message,
-                'sender': sender,
-                'timestamp': timestamp,
-            }
-        )
+            elif msg_type == "image":
+                image_data_url = data.get("dataURL")
+                print("Received image (base64 Data URL)")
+                # Optionally decode and save image if needed
+            
 
-    async def chat_message(self, event):
-        print("Group message event:", event)
-        await self.send(text_data=json.dumps({
-            'id':event['id'],
-            'message': event['message'],
-            'sender': event['sender'],
-            'timestamp': event['timestamp'],
-        }))
+            else:
+                await self.send(text_data=json.dumps({
+                    "error": "Unsupported message type"
+                }))
+
+        except json.JSONDecodeError:
+            await self.send(text_data=json.dumps({
+                "error": "Invalid JSON"
+            }))
+        except Exception as e:
+            print("Error processing message:", e)
+            await self.send(text_data=json.dumps({
+                "error": str(e)
+            }))
