@@ -134,9 +134,36 @@ input.addEventListener("keydown", (e) => {
 // Helper: sanitize and preserve line breaks
 function sanitizeAndFormat(text) {
   const div = document.createElement("div");
-  div.textContent = text; // escapes HTML
-  let escaped = div.innerHTML;
-  return escaped.replace(/\n/g, "<br>");
+  div.innerHTML = text; // parse the raw HTML
+
+  // Remove all tags except <a>
+  const allowedTags = ["A"];
+
+  function sanitizeNode(node) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      if (!allowedTags.includes(node.tagName)) {
+        // Replace disallowed tags with their text content
+        const textNode = document.createTextNode(node.textContent);
+        node.parentNode.replaceChild(textNode, node);
+      } else {
+        // Allowed tag: sanitize attributes (only keep href)
+        [...node.attributes].forEach((attr) => {
+          if (attr.name !== "href") node.removeAttribute(attr.name);
+          // Optional: also validate href value here to be safe
+        });
+        // Recursively sanitize children
+        node.childNodes.forEach(sanitizeNode);
+      }
+    }
+  }
+
+  div.childNodes.forEach(sanitizeNode);
+
+  // Now replace line breaks with <br>
+  let html = div.innerHTML;
+  html = html.replace(/\n/g, "<br>");
+
+  return html;
 }
 
 tutorAiSocket.onmessage = (event) => {
