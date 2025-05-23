@@ -23,3 +23,42 @@
 h-screen-minus-header {
   height: calc(100vh - 100px);
 }
+
+/* Anchor tags inside chat messages */
+#chat-area a {
+  color: #2563eb; /* Blue-600 */
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#chat-area a:hover {
+  color: #1d4ed8; /* Darker blue */
+}
+
+/* Chat bubble text styles for better clarity */
+#chat-area .bg-gray-100,
+#chat-area .bg-blue-100 {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px; /* Slightly bigger */
+  line-height: 1.5;
+  color: #111827; /* Dark gray */
+  word-wrap: break-word;
+  white-space: pre-wrap; /* preserve newlines */
+  letter-spacing: 0.02em;
+}
+
+/* Light gray bubble background for AI */
+#chat-area .bg-gray-100 {
+  background-color: #f3f4f6; /* softer gray */
+}
+
+/* Light blue bubble background for user */
+#chat-area .bg-blue-100 {
+  background-color: #e0f2fe; /* softer blue */
+  color: #1e3a8a; /* deeper blue text */
+}
+
+/* Optional: smooth scroll for chat */
+#chat-area {
+  scroll-behavior: smooth;
+}

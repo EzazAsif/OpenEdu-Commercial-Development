@@ -131,10 +131,18 @@ input.addEventListener("keydown", (e) => {
   }
 });
 
+// Helper: sanitize and preserve line breaks
+function sanitizeAndFormat(text) {
+  const div = document.createElement("div");
+  div.textContent = text; // escapes HTML
+  let escaped = div.innerHTML;
+  return escaped.replace(/\n/g, "<br>");
+}
+
 tutorAiSocket.onmessage = (event) => {
   const data = JSON.parse(event.data);
+  const safeHtml = sanitizeAndFormat(data.message);
   const parser = new DOMParser();
-  const safeHtml = data.message.replace(/\n/g, "<br>");
   const doc = parser.parseFromString(safeHtml, "text/html");
 
   if (data.type === "answer") {
@@ -162,7 +170,6 @@ tutorAiSocket.onmessage = (event) => {
 
     function typeNext() {
       if (nodeIndex >= nodes.length) {
-        // ✅ Save chat to localStorage after each full message
         localStorage.setItem("cachedChat", chat.innerHTML);
         return;
       }
