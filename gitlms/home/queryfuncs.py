@@ -38,6 +38,5 @@ def get_department_and_course_ids(institute, cache_timeout=300):
         Course.objects.filter(department__in=department_ids).values_list('id', flat=True)
     )
 
-    result = (department_ids, course_ids)
     cache.set(cache_key, result, timeout=cache_timeout)
-    return result
+    return department_ids, course_ids 
