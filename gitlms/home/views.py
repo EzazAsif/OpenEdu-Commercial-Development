@@ -70,7 +70,9 @@ def appoint(request):
     admins = User.objects.none()
     moderators = User.objects.none()
     rusers = []
-    
+    department_ids=[]
+    course_ids=[]
+    departmen
     offset = int(request.GET.get('offset', 0))
     limit = int(request.GET.get('limit', 20))
 
@@ -78,7 +80,7 @@ def appoint(request):
         if request.user.institute != -1:
             institute = proxy._get_institute(request.user.institute)
             department_ids,course_ids = get_department_and_course_ids(institute)
-            print(department_ids,course_ids)
+            
             
 
             # Elasticsearch queries for admins and moderators filtering by department and course ids
