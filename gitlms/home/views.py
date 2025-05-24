@@ -72,7 +72,7 @@ def appoint(request):
     rusers = []
     department_ids=[]
     course_ids=[]
-    departmen
+  
     offset = int(request.GET.get('offset', 0))
     limit = int(request.GET.get('limit', 20))
 
