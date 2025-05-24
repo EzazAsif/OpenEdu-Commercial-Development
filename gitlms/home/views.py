@@ -78,6 +78,7 @@ def appoint(request):
         if request.user.institute != -1:
             institute = proxy._get_institute(request.user.institute)
             department_ids,course_ids = get_department_and_course_ids(institute)
+            print(department_ids,course_ids)
             
 
             # Elasticsearch queries for admins and moderators filtering by department and course ids
